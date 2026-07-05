@@ -3,7 +3,7 @@
 # -- data source
 url <- file.path("E:/Datasets/gpx-tracker", "2026-06-20_3055267978_Charenton à Troyes.gpx")
 url <- file.path("E:/Datasets/gpx-tracker", "2026-06-30_3074592271_Boucle La Teste _ Arcachon _ Pilat _ Cazaux.gpx")
-
+url <- file.path("E:/Datasets/gpx-tracker", "2024-08-10_1778425758_Chicago Lakefront Trail.gpx")
 
 
 # -- load track
@@ -24,7 +24,6 @@ track <- track |>
 # row before bigger values is when pause started
 track <- track |> mutate(difftime = time - lag(time))
 
-
 # -- compute elevation difference
 track <- track |> mutate(elevation_gain = ele - lag(ele))
 
@@ -41,6 +40,10 @@ sum(track |>
 # -- elevation min / max
 min(track$ele)
 max(track$ele)
+
+# -- elevation evolution
+ggplot2::ggplot(track, ggplot2::aes(x = track_seg_point_id, y = ele)) +
+  ggplot2::geom_area()
 
 
 # -- Activity time
