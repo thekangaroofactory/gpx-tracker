@@ -11,7 +11,6 @@ function(input, output, session) {
     pts_to_seg() |>
     seg_stats()
   
-  elevation <- elevation_stats(track_segments)
   elevation <- elevation_summary(track_segments)
   
   # ----------------------------------------------------------------------------
