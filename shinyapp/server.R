@@ -37,10 +37,9 @@ function(input, output, session) {
       addCircleMarkers(data = track_segments |> filter(time > units::set_units(60, "secs")), lng = ~st_coordinates(geometry_start)[,1], lat = ~st_coordinates(geometry_start)[,2], radius = ~time/1000))
   
   
-  output$elevation <- renderPlot(
-    ggplot(track, aes(x = point_id, y = elevation)) +
-      geom_area())
   
+  # -- elevation profile
+  output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
   
   output$speed <- renderPlot(
     ggplot(track_segments, aes(x = segment_id, y = speed)) +
