@@ -24,7 +24,8 @@ seg_stats <- function(track){
   
   # -- compute distance (m)
   track <- track |>
-    mutate(distance = st_distance(geometry_start, geometry_end, by_element = T))
+    mutate(distance = st_distance(geometry_start, geometry_end, by_element = T),
+           cum_distance = cumsum(distance))
   
   # -- compute speed (km/h)
   track <- track |>
@@ -33,6 +34,7 @@ seg_stats <- function(track){
   
   # -- add elevation gain (m)
   track <- track |>
-    mutate(elevation_gain = elevation_end - elevation_start)
+    mutate(elevation_gain = elevation_end - elevation_start,
+           slope = elevation_gain / distance * 100)
 
 }
