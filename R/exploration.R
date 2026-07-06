@@ -84,6 +84,7 @@ track2 <- track2 |> mutate(cummean_speed = cummean(speed))
 # -- cummean evolution
 # note: maybe mix this with some rolling window mean speed
 ggplot2::ggplot(track2, ggplot2::aes(x = track_seg_point_id, y = cummean_speed)) +
+  ggplot2::geom_area(ggplot2::aes(y = speed), fill = "grey") +
   ggplot2::geom_line()
 
 
