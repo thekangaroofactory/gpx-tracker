@@ -21,7 +21,20 @@ page_navbar(
     value = "home",
     icon = icon("home"),
     
-    p("nice stuff here")
+    h1(textOutput("title")),
+    
+    layout_column_wrap(
+      p("Distance:", textOutput("distance", inline = T)),
+      p(textOutput("nb_points", inline = T), "GPS points"),
+      p("Elevation: ", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T)),
+      p("Elapsed time:", textOutput("time_elapsed", inline = T))),
+    
+    layout_columns(
+      col_widths = c(6,6),
+      leafletOutput("map"),
+      tagList(
+        plotOutput("elevation"),
+        plotOutput("speed")))
     
   )
   
