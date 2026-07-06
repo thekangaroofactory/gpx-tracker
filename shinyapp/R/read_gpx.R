@@ -18,16 +18,10 @@ read_gpx <- function(x){
   track <- sf::read_sf(x, layer = "track_points")
   
   # -- filter unused columns & rename
-  track <- track |>
+  track |>
     select(c("track_seg_point_id", "ele", "time", "geometry")) |>
     rename(point_id = track_seg_point_id,
            elevation = ele,
            datetime = time)
-  
-  # -- set unit
-  units(track$elevation) <- "m"
-  
-  # -- return
-  track
   
 }

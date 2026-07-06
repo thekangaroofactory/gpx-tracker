@@ -20,17 +20,15 @@ seg_stats <- function(track){
   # -- compute time (secs)
   track <- track |>
     mutate(time = as.numeric(difftime(datetime_end, datetime_start, units = "secs")))
-  units(track$time) <- "secs"
   
   # -- compute distance (m)
   track <- track |>
-    mutate(distance = st_distance(geometry_start, geometry_end, by_element = T),
+    mutate(distance = as.numeric(st_distance(geometry_start, geometry_end, by_element = T)),
            cum_distance = cumsum(distance))
   
   # -- compute speed (km/h)
   track <- track |>
     mutate(speed = distance / time)
-  units(track$speed) <- "km/h"
   
   # -- add elevation gain (m)
   track <- track |>

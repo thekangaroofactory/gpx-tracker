@@ -16,12 +16,12 @@ elevation_summary <- function(track){
 
   # -- total positive gain
   pos_gain <- sum(track |>
-        filter(elevation_gain > units::set_units(0, "m")) |>
+        filter(elevation_gain > 0) |>
         pull(elevation_gain))
   
   # -- total negative gain
   neg_gain <- sum(track |>
-        filter(elevation_gain < units::set_units(0, "m")) |>
+        filter(elevation_gain < 0) |>
         pull(elevation_gain))
 
   # -- return
