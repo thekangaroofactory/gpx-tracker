@@ -12,6 +12,7 @@ function(input, output, session) {
     seg_stats()
   
   elevation <- elevation_stats(track_segments)
+  elevation <- elevation_summary(track_segments)
   
   # ----------------------------------------------------------------------------
   # Outputs
