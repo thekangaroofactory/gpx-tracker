@@ -25,9 +25,9 @@ elevation_summary <- function(track){
         pull(elevation_gain))
 
   # -- return
-  c(min = min(track$elevation_start, track$elevation_end),
-    max = max(track$elevation_start, track$elevation_end),
-    positive_gain = pos_gain,
-    negative_gain = neg_gain)
+  c(lowest = min(track$elevation_start, track$elevation_end),
+    highest = max(track$elevation_start, track$elevation_end),
+    pos_gain = pos_gain,
+    neg_gain = neg_gain)
   
 }

@@ -26,9 +26,12 @@ function(input, output, session) {
 
   output$distance <- renderText(paste0(round(sum(track_segments$distance) / 1000, digits = 1), "km"))
   
-  output$elevation_up <- renderText(paste0(round(elevation['positive_gain'], digits = 0), "m"))
-  output$elevation_down <- renderText(paste0(round(elevation['negative_gain'], digits = 0), "m"))
-
+  # -- elevation
+  output$elevation_up <- renderText(paste0(round(elevation['pos_gain'], digits = 0), "m"))
+  output$elevation_down <- renderText(paste0(round(elevation['neg_gain'], digits = 0), "m"))
+  output$elevation_lowest <- renderText(paste0(round(elevation['lowest'], digits = 0), "m"))
+  output$elevation_highest <- renderText(paste0(round(elevation['highest'], digits = 0), "m"))
+  
   
   output$map <- renderLeaflet(
     leaflet(data = track) %>%

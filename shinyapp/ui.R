@@ -26,14 +26,20 @@ page_navbar(
     layout_column_wrap(
       p("Distance:", textOutput("distance", inline = T)),
       p(textOutput("nb_points", inline = T), "GPS points"),
-      p("Elevation: ", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T)),
       p("Elapsed time:", textOutput("time_elapsed", inline = T))),
     
     layout_columns(
       col_widths = c(6,6),
       leafletOutput("map"),
       tagList(
-        plotOutput("elevation"),
+        
+        h4("Elevation"),
+        card(
+          plotOutput("elevation"),
+          card_footer(style = "border-top:none;",
+                      "Gains:", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T),
+                      " | ", icon("caret-down"), textOutput("elevation_lowest", inline = T), icon("caret-up"), textOutput("elevation_highest", inline = T))),
+        
         plotOutput("speed")))
     
   )
