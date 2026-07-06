@@ -9,10 +9,10 @@
 #'
 #' @examples
 #' \notrun{
-#' elevation_stats(track)
+#' elevation_summary(track)
 #' }
 
-elevation_stats <- function(track){
+elevation_summary <- function(track){
 
   # -- total positive gain
   pos_gain <- sum(track |>
