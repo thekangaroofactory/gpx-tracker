@@ -40,9 +40,12 @@ function(input, output, session) {
   # -- elevation profile
   output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
   
+  # -- speed profile
   output$speed <- renderPlot(
     ggplot(track_segments, aes(x = segment_id, y = speed)) +
-      geom_area())
+      geom_area() +
+      plot_theme(),
+    bg = "transparent")
   
   
 }
