@@ -12,7 +12,6 @@ cols <- c("track_seg_point_id", "ele", "time", "geometry")
 track <- track[cols]
 
 # -- extract long / lat from geometry
-
 track <- track |>
   mutate(lon = st_coordinates(geometry)[,1],
          lat = st_coordinates(geometry)[,2])
