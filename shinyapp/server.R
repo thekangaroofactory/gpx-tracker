@@ -34,8 +34,7 @@ function(input, output, session) {
     leaflet(data = track) %>%
       addTiles() %>%
       addPolylines(lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], weight = 2, color = "black", opacity = 1) %>%
-      addCircleMarkers(data = track_segments |> filter(time > units::set_units(60, "secs")), lng = ~st_coordinates(geometry_start)[,1], lat = ~st_coordinates(geometry_start)[,2], radius = ~time/1000))
-  
+      addCircleMarkers(data = track_segments |> filter(time > 60), lng = ~st_coordinates(geometry_start)[,1], lat = ~st_coordinates(geometry_start)[,2], radius = ~time/1000))
   
   
   # -- elevation profile
