@@ -15,6 +15,22 @@
 
 m_track <- function(data, breaks = NULL){
 
+  # -- declare icons
+  i_medium <- makeAwesomeIcon(
+    icon = "circle-pause",
+    library = "fa",
+    markerColor = "lightgray")
+  
+  i_long <- makeAwesomeIcon(
+    icon = "circle-stop",
+    library = "fa",
+    markerColor = "lightgray")
+  
+  i_overnight <- makeAwesomeIcon(
+    icon = "campground",
+    library = "fa",
+    markerColor = "lightgray")
+  
   # -- return
   m <- leaflet(data) %>%
     
@@ -29,11 +45,48 @@ m_track <- function(data, breaks = NULL){
                  color = "black")
     
     # -- add breaks layer
-    if(is.data.frame(breaks))
+    if(is.data.frame(breaks)){
       
-      m <- m %>% addCircleMarkers(data = breaks,
-                                  lng = ~st_coordinates(geometry_start)[,1],
-                                  lat = ~st_coordinates(geometry_start)[,2],
-                                  radius = ~time/3600)
+      # -- short
+      m <- m %>% addCircleMarkers(data = breaks |> filter(type == "short"),
+                                  lng = ~st_coordinates(geometry_end)[,1],
+                                  lat = ~st_coordinates(geometry_end)[,2],
+                                  radius = ~time/1000,
+                                  popup = ~paste(sep = "<br/>",
+                                                 "<b>Break (short)</b>",
+                                                 paste0(floor(time / 60), "min")))
     
+      # -- medium
+      m <- m %>% addCircleMarkers(data = breaks |> filter(type == "medium"),
+                                  lng = ~st_coordinates(geometry_end)[,1],
+                                  lat = ~st_coordinates(geometry_end)[,2],
+                                  color = "orange",
+                                  radius = ~time/1000,
+                                  popup = ~paste(sep = "<br/>",
+                                                 "<b>Break (medium)</b>",
+                                                 paste0(floor(time / 60), "min")))
+      
+      # -- long
+      m <- m %>% addAwesomeMarkers(data = breaks |> filter(type == "long"),
+                                   lng = ~st_coordinates(geometry_end)[,1],
+                                   lat = ~st_coordinates(geometry_end)[,2],
+                                   icon = i_long,
+                                   popup = ~paste(sep = "<br/>",
+                                                  "<b>Break (long)</b>",
+                                                  paste0(floor(time / 60), "min")))
+      
+      # -- overnight
+      m <- m %>% addAwesomeMarkers(data = breaks |> filter(type == "overnight"),
+                                   lng = ~st_coordinates(geometry_end)[,1],
+                                   lat = ~st_coordinates(geometry_end)[,2],
+                                   icon = i_overnight,
+                                   popup = ~paste(sep = "<br/>",
+                                                  "<b>Break (overnight)</b>",
+                                                  paste0(floor(time / 3600), "h", floor((time - floor(time / 3600) * 3600) / 60), "min")))
+      
+    }
+  
+  # -- return
+  m
+      
 }
