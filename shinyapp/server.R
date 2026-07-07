@@ -11,9 +11,12 @@ function(input, output, session) {
     pts_to_seg() |>
     seg_stats()
 
+  # -- compute
+  
   # -- compute summaries
   elevation <- elevation_summary(track_segments)
   breaks <- break_summary(track_segments)
+  milestones <- milestones_summary(track_segments, breaks)
   
   # -- compute distance
   distance <- sum(track_segments$distance) / 1000
