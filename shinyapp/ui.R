@@ -40,7 +40,13 @@ page_navbar(
                       "Gains:", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T),
                       " | ", icon("caret-down"), textOutput("elevation_lowest", inline = T), icon("caret-up"), textOutput("elevation_highest", inline = T))),
         
-        plotOutput("speed")))
+        h4("Speed"),
+        card(
+          plotOutput("speed"),
+          card_footer(style = "border-top:none;", 
+                      icon("gauge-high"), textOutput("speed_max", inline = T), 
+                      icon("gauge"), textOutput("speed_mean", inline = T), 
+                      textOutput("speed_median", inline = T)))))
     
   )
   

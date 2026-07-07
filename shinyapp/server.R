@@ -11,6 +11,10 @@ function(input, output, session) {
     pts_to_seg() |>
     seg_stats()
   
+  # -- debug
+  debug_track_segments <<- track_segments
+  
+  
   elevation <- elevation_summary(track_segments)
   
   # ----------------------------------------------------------------------------
@@ -44,11 +48,9 @@ function(input, output, session) {
   output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
   
   # -- speed profile
-  output$speed <- renderPlot(
-    ggplot(track_segments, aes(x = segment_id, y = speed)) +
-      geom_area() +
-      plot_theme(),
-    bg = "transparent")
-  
+  output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
+  output$speed_max <- renderText(paste0(round(max(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+  output$speed_mean <- renderText(paste0(round(mean(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+  output$speed_median <- renderText(paste0(round(median(track_segments$speed, na.rm = T), digits = 1), "km/h"))
   
 }
