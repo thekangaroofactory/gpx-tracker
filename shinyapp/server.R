@@ -43,7 +43,7 @@ function(input, output, session) {
   
   
   # -- track map
-  output$map <- renderLeaflet(m_track(track_segments))
+  output$map <- renderLeaflet(m_track(track_segments, breaks))
   
   
   # -- speed profile

@@ -3,7 +3,7 @@
 #' Build Track Map
 #'
 #' @param data the track segment table.
-#' @param idle an integer to tune the break threshold.
+#' @param breaks the break summary table.
 #'
 #' @returns a leaflet map
 #' @export
@@ -13,10 +13,10 @@
 #' m_track(data)
 #' }
 
-m_track <- function(data, idle = 60){
+m_track <- function(data, breaks = NULL){
 
   # -- return
-  leaflet(data) %>%
+  m <- leaflet(data) %>%
     
     # -- the map
     addTiles() %>%
@@ -26,13 +26,14 @@ m_track <- function(data, idle = 60){
     addPolylines(lng = ~c(st_coordinates(geometry_start)[,1], st_coordinates(tail(geometry_end, 1))[,1]),
                  lat = ~c(st_coordinates(geometry_start)[,2], st_coordinates(tail(geometry_end, 1))[,2]), 
                  weight = 2, 
-                 color = "black") %>%
+                 color = "black")
     
     # -- add breaks layer
-    # basically segments with time > threshold
-    addCircleMarkers(data = data |> filter(time > idle),
-                     lng = ~st_coordinates(geometry_start)[,1],
-                     lat = ~st_coordinates(geometry_start)[,2],
-                     radius = ~time/1000)
-  
+    if(is.data.frame(breaks))
+      
+      m <- m %>% addCircleMarkers(data = breaks,
+                                  lng = ~st_coordinates(geometry_start)[,1],
+                                  lat = ~st_coordinates(geometry_start)[,2],
+                                  radius = ~time/3600)
+    
 }
