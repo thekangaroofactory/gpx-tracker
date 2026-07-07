@@ -15,10 +15,13 @@ function(input, output, session) {
   elevation <- elevation_summary(track_segments)
   breaks <- break_summary(track_segments)
   
+  # -- compute distance
+  distance <- sum(track_segments$distance) / 1000
+  
   # -- compute times
   time_elapsed <- difftime(max(track$datetime), min(track$datetime), units = "hours")
   time_activity <- time_elapsed - (sum(track_segments[track_segments$time > 20, ]$time) / 3600)
-
+  
   # -- debug
   debug_track_segments <<- track_segments
   debug_breaks <<- breaks
@@ -37,7 +40,7 @@ function(input, output, session) {
   output$time_activity <- renderText(paste0(floor(time_activity), "h", floor((time_activity - floor(time_activity)) * 60), "min"))
 
   
-  output$distance <- renderText(paste0(round(sum(track_segments$distance) / 1000, digits = 1), "km"))
+  output$distance <- renderText(paste0(round(distance, digits = 1), "km"))
   
   # -- elevation
   output$elevation_up <- renderText(paste0(round(elevation['pos_gain'], digits = 0), "m"))
@@ -56,7 +59,7 @@ function(input, output, session) {
   # -- speed profile
   output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
   output$speed_max <- renderText(paste0(round(max(track_segments$speed, na.rm = T), digits = 1), "km/h"))
-  output$speed_mean <- renderText(paste0(round(mean(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+  output$speed_average <- renderText(paste0(round(distance / as.numeric(time_activity), digits = 1), "km/h"))
   output$speed_median <- renderText(paste0(round(median(track_segments$speed, na.rm = T), digits = 1), "km/h"))
   
 }

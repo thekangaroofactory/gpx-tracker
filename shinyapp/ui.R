@@ -54,7 +54,7 @@ page_navbar(
           card_footer(style = "border-top:none;",
                       layout_column_wrap(
                         div(style = "margin: auto;", icon("gauge-high"), textOutput("speed_max", inline = T)), 
-                        div(style = "margin: auto;", icon("gauge-simple"), textOutput("speed_mean", inline = T)), 
+                        div(style = "margin: auto;", icon("gauge-simple"), textOutput("speed_average", inline = T)), 
                         div(style = "margin: auto;", icon("gauge"), textOutput("speed_median", inline = T)))))))
     
   )
