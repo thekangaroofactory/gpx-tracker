@@ -26,7 +26,8 @@ page_navbar(
     layout_column_wrap(
       p("Distance:", textOutput("distance", inline = T)),
       p(textOutput("nb_points", inline = T), "GPS points"),
-      p("Elapsed time:", textOutput("time_elapsed", inline = T))),
+      p("Elapsed time:", textOutput("time_elapsed", inline = T)),
+      p("Activity time:", textOutput("time_activity", inline = T))),
     
     layout_columns(
       col_widths = c(7, 5),

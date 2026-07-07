@@ -10,13 +10,18 @@ function(input, output, session) {
   track_segments <- track |>
     pts_to_seg() |>
     seg_stats()
-  
-  # -- debug
-  debug_track_segments <<- track_segments
-  
-  
+
+  # -- compute summaries
   elevation <- elevation_summary(track_segments)
   breaks <- break_summary(track_segments)
+  
+  # -- compute times
+  time_elapsed <- difftime(max(track$datetime), min(track$datetime), units = "hours")
+  time_activity <- time_elapsed - (sum(track_segments[track_segments$time > 20, ]$time) / 3600)
+
+  # -- debug
+  debug_track_segments <<- track_segments
+  debug_breaks <<- breaks
   
   
   # ----------------------------------------------------------------------------
@@ -27,9 +32,11 @@ function(input, output, session) {
   
   output$nb_points <- renderText(nrow(track))
   
-  time_elapsed <- difftime(max(track$datetime), min(track$datetime), units = "hours")
+  # -- times
   output$time_elapsed <- renderText(paste0(floor(time_elapsed), "h", floor((time_elapsed - floor(time_elapsed)) * 60), "min"))
+  output$time_activity <- renderText(paste0(floor(time_activity), "h", floor((time_activity - floor(time_activity)) * 60), "min"))
 
+  
   output$distance <- renderText(paste0(round(sum(track_segments$distance) / 1000, digits = 1), "km"))
   
   # -- elevation
