@@ -24,7 +24,7 @@ seg_stats <- function(track){
   # -- compute distance (m)
   track <- track |>
     mutate(distance = as.numeric(st_distance(geometry_start, geometry_end, by_element = T)),
-           cum_distance = cumsum(distance))
+           cum_distance = cumsum(distance) / 1000)
   
   # -- compute speed (km/h)
   track <- track |>
