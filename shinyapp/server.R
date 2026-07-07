@@ -36,16 +36,13 @@ function(input, output, session) {
   output$elevation_lowest <- renderText(paste0(round(elevation['lowest'], digits = 0), "m"))
   output$elevation_highest <- renderText(paste0(round(elevation['highest'], digits = 0), "m"))
   
-  
-  output$map <- renderLeaflet(
-    leaflet(data = track) %>%
-      addTiles() %>%
-      addPolylines(lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], weight = 2, color = "black", opacity = 1) %>%
-      addCircleMarkers(data = track_segments |> filter(time > 60), lng = ~st_coordinates(geometry_start)[,1], lat = ~st_coordinates(geometry_start)[,2], radius = ~time/1000))
-  
-  
   # -- elevation profile
   output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
+  
+  
+  # -- track map
+  output$map <- renderLeaflet(m_track(track_segments))
+  
   
   # -- speed profile
   output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")

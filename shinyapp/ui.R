@@ -29,8 +29,15 @@ page_navbar(
       p("Elapsed time:", textOutput("time_elapsed", inline = T))),
     
     layout_columns(
-      col_widths = c(6,6),
-      leafletOutput("map"),
+      col_widths = c(7, 5),
+      
+      # -- the map
+      tagList(
+        h4("Track"),
+        card(
+          leafletOutput("map"))),
+      
+      # -- the plots
       tagList(
         
         h4("Elevation"),
