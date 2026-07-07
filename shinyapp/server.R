@@ -16,6 +16,8 @@ function(input, output, session) {
   
   
   elevation <- elevation_summary(track_segments)
+  breaks <- break_summary(track_segments)
+  
   
   # ----------------------------------------------------------------------------
   # Outputs
