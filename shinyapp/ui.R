@@ -43,10 +43,11 @@ page_navbar(
         h4("Speed"),
         card(
           plotOutput("speed"),
-          card_footer(style = "border-top:none;", 
-                      icon("gauge-high"), textOutput("speed_max", inline = T), 
-                      icon("gauge"), textOutput("speed_mean", inline = T), 
-                      textOutput("speed_median", inline = T)))))
+          card_footer(style = "border-top:none;",
+                      layout_column_wrap(
+                        div(style = "margin: auto;", icon("gauge-high"), textOutput("speed_max", inline = T)), 
+                        div(style = "margin: auto;", icon("gauge-simple"), textOutput("speed_mean", inline = T)), 
+                        div(style = "margin: auto;", icon("gauge"), textOutput("speed_median", inline = T)))))))
     
   )
   
