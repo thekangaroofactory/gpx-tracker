@@ -24,8 +24,8 @@ page_navbar(
     h1(textOutput("title")),
     
     layout_column_wrap(
+      p(textOutput("nb_day", inline = T), "itinerary"),
       p("Distance:", textOutput("distance", inline = T)),
-      p(textOutput("nb_day", inline = T)),
       p(textOutput("nb_points", inline = T), "GPS points"),
       p("Elapsed time:", textOutput("time_elapsed", inline = T)),
       p("Activity time:", textOutput("time_activity", inline = T))),

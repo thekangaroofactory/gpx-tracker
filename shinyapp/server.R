@@ -49,7 +49,7 @@ function(input, output, session) {
   # -- times
   output$time_elapsed <- renderText(paste0(floor(time_elapsed), "h", floor((time_elapsed - floor(time_elapsed)) * 60), "min"))
   output$time_activity <- renderText(paste0(floor(time_activity), "h", floor((time_activity - floor(time_activity)) * 60), "min"))
-  output$nb_day <- renderText(paste0(nb_day, "-day itinerary"))
+  output$nb_day <- renderText(paste0(nb_day, "-day"))
   
   # -- distance
   output$distance <- renderText(paste0(round(distance, digits = 1), "km"))
