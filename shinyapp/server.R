@@ -4,6 +4,10 @@ function(input, output, session) {
   
   # -- load data
   filename <- "2026-06-20_3055267978_Charenton à Troyes.gpx"
+  # filename <- "2026-06-30_3074592271_Boucle La Teste _ Arcachon _ Pilat _ Cazaux.gpx"
+  # filename <- "2024-08-10_1778425758_Chicago Lakefront Trail.gpx"
+  
+  
   track <- read_gpx(file.path(Sys.getenv("DATA_HOME"), filename))
   
   # -- compute segments & stats
@@ -27,6 +31,7 @@ function(input, output, session) {
   
   # -- debug
   debug_track_segments <<- track_segments
+  debug_milestones <<- milestones
   debug_breaks <<- breaks
   
   
@@ -36,14 +41,24 @@ function(input, output, session) {
   
   output$title <- renderText(tail(unlist(strsplit(unlist(strsplit(filename, split = ".", fixed = T))[1], "_")), 1))
   
+  # -- GPS points
   output$nb_points <- renderText(nrow(track))
   
   # -- times
   output$time_elapsed <- renderText(paste0(floor(time_elapsed), "h", floor((time_elapsed - floor(time_elapsed)) * 60), "min"))
   output$time_activity <- renderText(paste0(floor(time_activity), "h", floor((time_activity - floor(time_activity)) * 60), "min"))
 
-  
+  # -- distance
   output$distance <- renderText(paste0(round(distance, digits = 1), "km"))
+  
+  
+  # -- milestone
+  output$timeline <- renderUI(timeline(milestones))
+  
+  
+  # -- track map
+  output$map <- renderLeaflet(m_track(track_segments, breaks))
+  
   
   # -- elevation
   output$elevation_up <- renderText(paste0(round(elevation['pos_gain'], digits = 0), "m"))
@@ -54,15 +69,12 @@ function(input, output, session) {
   # -- elevation profile
   output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
   
-  
-  # -- track map
-  output$map <- renderLeaflet(m_track(track_segments, breaks))
-  
-  
-  # -- speed profile
-  output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
+  # -- speed
   output$speed_max <- renderText(paste0(round(max(track_segments$speed, na.rm = T), digits = 1), "km/h"))
   output$speed_average <- renderText(paste0(round(distance / as.numeric(time_activity), digits = 1), "km/h"))
   output$speed_median <- renderText(paste0(round(median(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+  
+  # -- speed profile
+  output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
   
 }

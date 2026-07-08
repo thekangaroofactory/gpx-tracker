@@ -29,34 +29,39 @@ page_navbar(
       p("Elapsed time:", textOutput("time_elapsed", inline = T)),
       p("Activity time:", textOutput("time_activity", inline = T))),
     
-    layout_columns(
-      col_widths = c(7, 5),
+    layout_sidebar(
+      border = F,
       
-      # -- the map
-      tagList(
-        h4("Track"),
-        card(
-          leafletOutput("map"))),
+      # -- timeline
+      sidebar = uiOutput("timeline"),
       
-      # -- the plots
-      tagList(
+      # -- main content
+      layout_columns(
+        col_widths = c(7, 5),
         
-        h4("Elevation"),
-        card(
-          plotOutput("elevation"),
-          card_footer(style = "border-top:none;",
-                      "Gains:", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T),
-                      " | ", icon("caret-down"), textOutput("elevation_lowest", inline = T), icon("caret-up"), textOutput("elevation_highest", inline = T))),
+        # -- the map
+        tagList(
+          h4("Track"),
+          card(
+            leafletOutput("map"))),
         
-        h4("Speed"),
-        card(
-          plotOutput("speed"),
-          card_footer(style = "border-top:none;",
-                      layout_column_wrap(
-                        div(style = "margin: auto;", icon("gauge-high"), textOutput("speed_max", inline = T)), 
-                        div(style = "margin: auto;", icon("gauge-simple"), textOutput("speed_average", inline = T)), 
-                        div(style = "margin: auto;", icon("gauge"), textOutput("speed_median", inline = T)))))))
-    
-  )
+        # -- the plots
+        tagList(
+          
+          h4("Elevation"),
+          card(
+            plotOutput("elevation"),
+            card_footer(style = "border-top:none;",
+                        "Gains:", icon("arrow-up"), textOutput("elevation_up", inline = T), icon("arrow-down"), textOutput("elevation_down", inline = T),
+                        " | ", icon("caret-down"), textOutput("elevation_lowest", inline = T), icon("caret-up"), textOutput("elevation_highest", inline = T))),
+          
+          h4("Speed"),
+          card(
+            plotOutput("speed"),
+            card_footer(style = "border-top:none;",
+                        layout_column_wrap(
+                          div(style = "margin: auto;", icon("gauge-high"), textOutput("speed_max", inline = T)), 
+                          div(style = "margin: auto;", icon("gauge-simple"), textOutput("speed_average", inline = T)), 
+                          div(style = "margin: auto;", icon("gauge"), textOutput("speed_median", inline = T)))))))))
   
 )
