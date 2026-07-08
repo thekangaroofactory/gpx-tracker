@@ -28,6 +28,8 @@ function(input, output, session) {
   # -- compute times
   time_elapsed <- difftime(max(track$datetime), min(track$datetime), units = "hours")
   time_activity <- time_elapsed - (sum(track_segments[track_segments$time > 20, ]$time) / 3600)
+  nb_day <- as.Date(max(track$datetime)) - as.Date(min(track$datetime)) + 1
+  
   
   # -- debug
   debug_track_segments <<- track_segments
@@ -47,7 +49,8 @@ function(input, output, session) {
   # -- times
   output$time_elapsed <- renderText(paste0(floor(time_elapsed), "h", floor((time_elapsed - floor(time_elapsed)) * 60), "min"))
   output$time_activity <- renderText(paste0(floor(time_activity), "h", floor((time_activity - floor(time_activity)) * 60), "min"))
-
+  output$nb_day <- renderText(paste0(nb_day, "-day itinerary"))
+  
   # -- distance
   output$distance <- renderText(paste0(round(distance, digits = 1), "km"))
   
