@@ -25,6 +25,7 @@ timeline <- function(steps){
     x <- steps[x, ]
     
     card(
+      style = "background-color:#f4f3ef;",
       card_body(
         gap = 0,
         div(icon(icon_list[[x$type]]), tags$b(x$type)),
