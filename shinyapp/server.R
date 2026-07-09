@@ -66,4 +66,21 @@ function(input, output, session) {
     
   })
   
+  
+  # -- close itinerary (tab)
+  observeEvent(input$close_track, {
+    
+    cat("Drop tab", input$close_track)
+    
+    # -- extract id
+    track_id <- gsub("close_", "", input$close_track)
+    
+    # -- drop from cache
+    cache_ids(cache_ids()[!cache_ids() %in% track_id])
+    
+    # -- close
+    nav_remove(id = "nav", target = track_id)
+    
+  })
+  
 }

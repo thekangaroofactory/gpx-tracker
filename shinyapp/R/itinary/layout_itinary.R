@@ -15,6 +15,7 @@ layout_itinary <- function(id){
     h1(textOutput(ns("title"))),
     
     layout_column_wrap(
+      actionLink(inputId = paste0("close_", id), label = "close",  onclick = 'Shiny.setInputValue(\"close_track\", this.id, {priority: \"event\"})'),
       p(textOutput(ns("nb_day"), inline = T), "itinerary"),
       p("Distance:", textOutput(ns("distance"), inline = T)),
       p(textOutput(ns("nb_points"), inline = T), "GPS points"),
