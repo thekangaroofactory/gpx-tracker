@@ -12,7 +12,7 @@ layout_itinary <- function(id){
     icon = icon("route"),
     class = "html-fill-item html-fill-container bslib-gap-spacing",
     
-    h1(textOutput("title")),
+    h1(textOutput(ns("title"))),
     
     layout_column_wrap(
       p(textOutput(ns("nb_day"), inline = T), "itinerary"),
