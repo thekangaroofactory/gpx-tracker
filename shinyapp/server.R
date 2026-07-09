@@ -11,21 +11,44 @@ function(input, output, session) {
   # -- file selector listener
   observeEvent(input$open_track, {
     
-    # -- generate module uuid
-    # otherwise module would crash when adding another instance
-    uuid <- rlang::hash(input$open_track)
-    
-    # -- start module server
-    itinary_Server(id = uuid, filename = input$open_track)
-    
-    # -- build tab ui
-    content <- layout_itinary(id = uuid)
-    
-    # -- insert tab
-    nav_insert(id = "nav",
-               nav = content,
-               select = T)
+    # -- wrap instructions
+    withProgress(
+      min = 0,
+      max = 100,
+      value = 10,
+      message = "Init",
+      
+      {
+        
+        # -- generate module uuid
+        # otherwise module would crash when adding another instance
+        uuid <- rlang::hash(input$open_track)
+        
+        # -- start module server
+        setProgress(
+          value = 10,
+          message = "Load & analyze data")
+        
+        itinary_Server(id = uuid, filename = input$open_track)
+        
+        # -- build tab ui
+        setProgress(
+          value = 60,
+          message = "Build UI")
+        
+        content <- layout_itinary(id = uuid)
+        
+        # -- insert tab
+        setProgress(
+          value = 90,
+          message = "Open tab")
+        
+        nav_insert(id = "nav",
+                   nav = content,
+                   select = T)
+        
+      })
     
   })
-
+  
 }
