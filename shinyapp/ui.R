@@ -16,12 +16,13 @@ page_navbar(
     base_font = font_google("Quicksand")),
   
   # -- content
+  # by default, the ui contains only the home tab
   nav_panel(
     title = "Home",
     value = "home",
     icon = icon("home"),
     
-    
-    
+    h1("Home"),
+    uiOutput("file_selector"))
   
 )

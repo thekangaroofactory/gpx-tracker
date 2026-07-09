@@ -2,26 +2,17 @@
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
-  # -- check available files
+  # -- list available files
   gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx")
   
-  output$file_selector <- renderUI(
-    
-    layout_column_wrap(
-      !!!lapply(basename(gpx_files), function(x) {
-    
-    card(
-      card_header("Itinary"),
-      x,
-      card_footer(actionLink(inputId = x, 
-                             label = "open",
-                             onclick = 'Shiny.setInputValue(\"open_track\", this.id, {priority: \"event\"})')))
-    
-  })))
+  # -- file selector layout
+  output$file_selector <- renderUI(layout_file_selector(files = basename(gpx_files)))
   
+  # -- file selector listener
   observeEvent(input$open_track, {
     
     # -- generate module uuid
+    # otherwise module would crash when adding another instance
     uuid <- rlang::hash(input$open_track)
     
     # -- start module server
@@ -36,8 +27,5 @@ function(input, output, session) {
                select = T)
     
   })
-  
-  
-  # ----------------------------------------------------------------------------
-  
+
 }
