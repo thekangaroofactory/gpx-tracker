@@ -33,8 +33,6 @@ function(input, output, session) {
     # -- insert tab
     nav_insert(id = "nav",
                nav = content,
-               target = "home",
-               position = "after",
                select = T)
     
   })
