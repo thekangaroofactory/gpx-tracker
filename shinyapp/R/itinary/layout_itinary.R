@@ -10,6 +10,7 @@ layout_itinary <- function(id){
     title = "Itinary",
     value = "itinary",
     icon = icon("route"),
+    class = "html-fill-item html-fill-container bslib-gap-spacing",
     
     h1(textOutput("title")),
     
