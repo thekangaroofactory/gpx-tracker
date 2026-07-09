@@ -51,7 +51,7 @@ function(input, output, session) {
             message = "Build UI")
           
           # -- build ui
-          content <- layout_itinary(id = uuid, title = gsub(".gpx", "", input$open_track))
+          content <- layout_itinary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
           
           # -- insert tab
           setProgress(
