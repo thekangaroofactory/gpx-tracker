@@ -51,7 +51,7 @@ function(input, output, session) {
             message = "Build UI")
           
           # -- build ui
-          content <- layout_itinary(id = uuid)
+          content <- layout_itinary(id = uuid, title = gsub(".gpx", "", input$open_track))
           
           # -- insert tab
           setProgress(
@@ -70,7 +70,7 @@ function(input, output, session) {
   # -- close itinerary (tab)
   observeEvent(input$close_track, {
     
-    cat("Drop tab", input$close_track)
+    cat("Close itinary", input$close_track, "\n")
     
     # -- extract id
     track_id <- gsub("close_", "", input$close_track)

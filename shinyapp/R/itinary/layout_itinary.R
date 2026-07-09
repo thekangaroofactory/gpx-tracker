@@ -1,13 +1,13 @@
 
 
-layout_itinary <- function(id){
+layout_itinary <- function(id, title = "Itinary"){
   
   # -- namespace
   ns <- NS(id)
   
   # -- return UI
   nav_panel(
-    title = "Itinary",
+    title = title,
     value = id,
     icon = icon("route"),
     class = "html-fill-item html-fill-container bslib-gap-spacing",
