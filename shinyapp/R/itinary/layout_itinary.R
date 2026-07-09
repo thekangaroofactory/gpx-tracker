@@ -8,7 +8,7 @@ layout_itinary <- function(id){
   # -- return UI
   nav_panel(
     title = "Itinary",
-    value = "itinary",
+    value = id,
     icon = icon("route"),
     class = "html-fill-item html-fill-container bslib-gap-spacing",
     
