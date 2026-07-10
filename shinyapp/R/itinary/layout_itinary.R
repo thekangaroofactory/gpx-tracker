@@ -45,8 +45,11 @@ layout_itinary <- function(id, title = "Itinary"){
           card(
             plotOutput(ns("elevation")),
             card_footer(style = "border-top:none;",
-                        "Gains:", icon("arrow-up"), textOutput(ns("elevation_up"), inline = T), icon("arrow-down"), textOutput(ns("elevation_down"), inline = T),
-                        " | ", icon("caret-down"), textOutput(ns("elevation_lowest"), inline = T), icon("caret-up"), textOutput(ns("elevation_highest"), inline = T))),
+                        layout_columns(
+                          div(style = "margin: auto;", icon("arrow-up"), textOutput(ns("elevation_up"), inline = T)), 
+                          div(style = "margin: auto;", icon("arrow-down"), textOutput(ns("elevation_down"), inline = T)),
+                          div(style = "margin: auto;", icon("caret-down"), textOutput(ns("elevation_lowest"), inline = T)), 
+                          div(style = "margin: auto;", icon("caret-up"), textOutput(ns("elevation_highest"), inline = T))))),
           
           h4("Speed"),
           card(
