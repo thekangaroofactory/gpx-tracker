@@ -22,7 +22,8 @@ page_navbar(
     value = "home",
     icon = icon("home"),
     
-    h1("Home"),
+    h1("Tracks"),
+    p("Available GPX files:"),
     uiOutput("file_selector"))
   
 )
