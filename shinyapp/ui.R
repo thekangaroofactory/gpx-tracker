@@ -7,7 +7,7 @@ page_navbar(
   title = "GPX-Tracker",
   window_title = "GPX-Tracker",
   id = "nav",
-  footer = p(style = "font-size:9pt;margin-left:20px;", paste("©", format(Sys.Date(), "%Y"), "Philippe Peret", "|", "Version v0.9")),
+  footer = p(style = "font-size:9pt;margin-left:20px;", paste("©", format(Sys.Date(), "%Y"), "Philippe Peret", "|", paste0("Version", app_version))),
   
   # -- theme
   theme = bs_theme(
