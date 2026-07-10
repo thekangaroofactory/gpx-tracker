@@ -52,7 +52,7 @@ layout_itinary <- function(id, title = "Itinary"){
           card(
             plotOutput(ns("speed")),
             card_footer(style = "border-top:none;",
-                        layout_column_wrap(
+                        layout_columns(
                           div(style = "margin: auto;", icon("gauge-high"), textOutput(ns("speed_max"), inline = T)),
                           div(style = "margin: auto;", icon("gauge-simple"), textOutput(ns("speed_average"), inline = T)),
                           div(style = "margin: auto;", icon("gauge"), textOutput(ns("speed_median"), inline = T)))))))))
