@@ -10,3 +10,6 @@ library(ggplot2)
 
 # -- code
 ktools::source_code("./R")
+
+# -- params
+app_version <- "v1.0"

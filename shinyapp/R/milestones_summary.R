@@ -21,7 +21,7 @@ milestones_summary <- function(track, breaks){
   
   # -- get address info
   # zoom = 10 for city level API output
-  milestones$city <- lapply(milestones$geometry_start, function(geometry){
+  milestones$city <- unlist(lapply(milestones$geometry_start, function(geometry){
   
     # -- call API
     osm_data <- reverse_geocoding(lng = st_coordinates(geometry)[, 1], 
@@ -31,7 +31,7 @@ milestones_summary <- function(track, breaks){
     # -- return (depending on result type)
     osm_data$address[osm_data$addresstype]
     
-  })
+  }))
   
   milestones |>
     select(-c(slope, elevation_gain, cum_speed, speed, distance, time)) |>
