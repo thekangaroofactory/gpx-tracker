@@ -12,7 +12,10 @@ layout_itinary <- function(id, title = "Itinary"){
     icon = icon("route"),
     class = "html-fill-item html-fill-container bslib-gap-spacing",
     
-    h1(textOutput(ns("title"))),
+    # -- track title
+    div(class = "track-title",
+        h1(textOutput(ns("title"))),
+        actionLink(inputId = paste0("close_", id), label = "close", onclick = 'Shiny.setInputValue(\"close_track\", this.id, {priority: \"event\"})')),
     
     # -- track info
     layout_column_wrap(
