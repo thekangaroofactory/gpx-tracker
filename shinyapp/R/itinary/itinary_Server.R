@@ -101,5 +101,30 @@ itinary_Server <- function(id, filename) {
     # -- speed profile
     output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
     
+    
+    # ----------------------------------------------------------------------------
+    # Slider
+    # ----------------------------------------------------------------------------
+    
+    # -- slider listener
+    # event on toggles & dots
+    observeEvent(input$slider_event, {
+      
+      # -- extract target slide nb
+      target_slide <- gsub("toggle_", "", input$slider_event) |> gsub(pattern = "dot_", replacement = "")
+      
+      # -- close active slide
+      shinyjs::toggleClass(selector = '.slider-active', class = 'slider-active')
+      shinyjs::toggleClass(selector = '.slider-toggle-active', class = 'slider-toggle-active')
+      shinyjs::toggleClass(selector = '.slider-dot-on', class = 'slider-dot-on')
+      
+      # -- open target slide
+      shinyjs::toggleClass(selector = paste0('#slide-', target_slide), class = 'slider-active')
+      shinyjs::toggleClass(selector = paste0('#toggle_', target_slide), class = 'slider-toggle-active')
+      shinyjs::toggleClass(selector = paste0('#dot_', target_slide), class = 'slider-dot-on')
+      
+    })
+    
+    
   })
 }

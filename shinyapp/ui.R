@@ -9,6 +9,11 @@ page_navbar(
   id = "nav",
   footer = p(style = "font-size:9pt;margin-left:20px;", paste("©", format(Sys.Date(), "%Y"), "Philippe Peret", "|", paste0("Version", app_version))),
   
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "css/slider.css"),
+    tags$link(rel = "stylesheet", type = "text/css", href = "css/gpx_tracker.css")),
+  shinyjs::useShinyjs(),
+  
   # -- theme
   theme = bs_theme(
     bg = "#e8e5d4",

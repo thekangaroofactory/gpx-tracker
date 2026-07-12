@@ -1,0 +1,128 @@
+
+
+/* -- the slider component -------------------------------------------------- */
+.slider {
+  
+}
+
+
+/* -- the component's header  ----------------------------------------------- */
+.slider-header {
+  
+  padding: 10px;
+  text-align: center;
+  
+}
+
+.slider-toggle {
+  
+  height: 30px;
+  margin: 0 10px;
+  padding: 0 25px;
+
+  border: none;
+  border-radius: 20px;
+  
+  background-color: #dadfcb;
+  transition: background-color 0.5s;
+  
+}
+
+.slider-toggle:hover {
+  
+  background-color: #cbd2b6;
+  color: black;
+  
+}
+
+.slider-toggle-active {
+  
+  background-color: #b5c098;
+  
+}
+
+
+/* -- the slider body ------------------------------------------------------- */
+.slider-body {
+  
+  /*position: relative;*/
+  
+  width: 100%;
+  height: 600px;
+  
+  overflow: hidden;
+  
+}
+
+/* -- the slider content = slides */
+.slider-content {
+ 
+  position: absolute;
+  
+  width: 100%;
+  /*height: 500px;*/
+  
+  left: 200%;
+  opacity: 0;
+  transition: all 0.75s ease-out allow-discrete;
+  
+}
+
+/* -- active slide */
+.slider-active {
+  
+  opacity: 1;
+  left: 0;
+  
+}
+
+@starting-style {
+  .slider-active {
+    
+    opacity: 0;
+    
+  }
+}
+
+
+/* -- the component's footer  ----------------------------------------------- */
+.slider-footer {
+  
+  padding: 2px;
+
+}
+
+.slider-footer ul {
+  
+  margin: 0;
+  padding: 0;
+  
+  text-align: center;
+ 
+}
+
+.slider-footer li {
+  
+  display: inline-block;
+  
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  
+  cursor:pointer;
+  background-color: #dadfcb;
+  transition: background-color 0.5s;
+  
+}
+
+.slider-footer li:hover {
+  
+  background-color: #cbd2b6;
+  
+}
+
+.slider-footer li.slider-dot-on {
+  
+  background-color: #b5c098;
+  
+}
