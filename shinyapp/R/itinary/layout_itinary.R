@@ -87,6 +87,17 @@ layout_itinary <- function(id, title = "Itinary"){
                                       div(style = "margin: auto;", icon("gauge-simple"), textOutput(ns("speed_average"), inline = T)),
                                       div(style = "margin: auto;", icon("gauge"), textOutput(ns("speed_median"), inline = T))))))))),
             
+            div(id = "slide-2", class = "slider-content",
+                
+                layout_columns(
+                  fill = F,
+                  col_widths = c(4,8),
+                  
+                  p("Analyze the section with the slowest progress."),
+                  
+                  card(
+                    fill = F,
+                    plotOutput(ns("distance_ruler"), height = "200px"))))),
         
         # -- footer (dots)
         div(class = "slider-footer",

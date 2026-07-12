@@ -103,6 +103,14 @@ itinary_Server <- function(id, filename) {
     
     
     # ----------------------------------------------------------------------------
+    # Progress
+    # ----------------------------------------------------------------------------
+
+    distances <- distance_summary(track_segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
+    output$distance_ruler <- renderPlot(p_distance_ruler(distances), bg = "transparent")
+
+    
+    # ----------------------------------------------------------------------------
     # Slider
     # ----------------------------------------------------------------------------
     
