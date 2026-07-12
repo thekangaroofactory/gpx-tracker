@@ -79,6 +79,7 @@ function(input, output, session) {
     cache_ids(cache_ids()[!cache_ids() %in% track_id])
     
     # -- close
+    nav_select(id = "nav", selected = "home")
     nav_remove(id = "nav", target = track_id)
     
   })
