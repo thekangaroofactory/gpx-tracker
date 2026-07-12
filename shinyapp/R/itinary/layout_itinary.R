@@ -50,7 +50,9 @@ layout_itinary <- function(id, title = "Itinary"){
             div(id = "slide-1", class = "slider-content slider-active",
                 
                 layout_sidebar(
-                  height = "520px",
+                  # -- fixing height on the component itself otherwise plots / content won't fit inside it.
+                  # height is set on the slider-body on CSS side to push the dots after the body.
+                  height = "620px",
                   border = F,
                   
                   # -- timeline
