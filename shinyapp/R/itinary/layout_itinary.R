@@ -11,6 +11,7 @@ layout_itinary <- function(id, title = "Itinary"){
     value = id,
     icon = icon("route"),
     class = "html-fill-item html-fill-container bslib-gap-spacing",
+    style = "margin-top: 0px",
     
     # -- track title
     div(class = "track-title",
