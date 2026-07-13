@@ -1,81 +1,83 @@
 
+/* -----------------------------------------------------------------------------
+   This is the CSS style for the slider component
+----------------------------------------------------------------------------- */
 
-/* -- the slider component -------------------------------------------------- */
+/* -- the component (wrapper) ----------------------------------------------- */
 .slider {
   
+  overflow-x:hidden;  
+
 }
 
-
-/* -- the component's header  ----------------------------------------------- */
-.slider-header {
+/* -- the component's header & footer --------------------------------------- */
+.toggles {
   
-  padding: 10px;
   text-align: center;
   
 }
 
-.slider-toggle {
+.toggles li {
   
-  height: 30px;
-  margin: 0 10px;
-  padding: 0 25px;
-
-  border: none;
-  border-radius: 20px;
-  
-  background-color: #dadfcb;
+  display: inline-block;
+  cursor: pointer;
+  background-color: grey;
   transition: background-color 0.5s;
   
 }
 
-.slider-toggle:hover {
+.toggles li:hover {
   
-  background-color: #cbd2b6;
-  color: black;
-  
-}
-
-.slider-toggle-active {
-  
-  background-color: #b5c098;
+  background-color: cyan;
   
 }
 
+.toggles li.toggle-active {
+  
+  background-color: pink;
+  
+}
 
-/* -- the slider body ------------------------------------------------------- */
+/* -- header specific --------------- */
+.toggles-header li {
+  
+  margin: 0 10px;
+  padding: 3px 25px;
+
+  border-radius: 20px;
+  
+}
+
+/* -- footer specific --------------- */
+.toggles-footer li {
+  
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  
+}
+
+/* -- the component's body (slide) ------------------------------------------ */
 .slider-body {
-  
-  position: relative;
-  
-  /* to push the dots after the body: 
-  - based on the height directly set on the slide content (here 620px on the layout_sidebar) 
-  - value < 620px otherwise it's under the site footer (unclickable)*/
-  height: 615px;
-  width: 100%;
-  
-  overflow: hidden;
-  
-}
 
-/* -- the slider content = slides */
-.slider-content {
- 
-  position: absolute;
-  
-  /* height is directly set on the content otherwise plots won't shrink to fit */
-  width: 100%;
-  
-  left: 200%;
+  min-height: 400px;
+  max-height: 400px;
   opacity: 0;
-  transition: all 0.75s ease-out allow-discrete;
+  transform: translateX(200%);
   
+  transition: all 0.75s ease-out allow-discrete;
+
 }
 
 /* -- active slide */
 .slider-active {
   
+  max-height: 600px;
+  
   opacity: 1;
-  left: 0;
+  transform: translateX(0px);
+  
+  transition: all 0.75s ease-out allow-discrete;
   
 }
 
@@ -85,47 +87,4 @@
     opacity: 0;
     
   }
-}
-
-
-/* -- the component's footer  ----------------------------------------------- */
-.slider-footer {
-  
-  padding: 2px;
-
-}
-
-.slider-footer ul {
-  
-  margin: 0;
-  padding: 0;
-  
-  text-align: center;
- 
-}
-
-.slider-footer li {
-  
-  display: inline-block;
-  
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  
-  cursor:pointer;
-  background-color: #dadfcb;
-  transition: background-color 0.5s;
-  
-}
-
-.slider-footer li:hover {
-  
-  background-color: #cbd2b6;
-  
-}
-
-.slider-footer li.slider-dot-on {
-  
-  background-color: #b5c098;
-  
 }

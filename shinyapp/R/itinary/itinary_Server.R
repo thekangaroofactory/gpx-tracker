@@ -100,25 +100,27 @@ itinary_Server <- function(id, segments, filename) {
     # ----------------------------------------------------------------------------
     # Slider
     # ----------------------------------------------------------------------------
+
+    # -- listener (switch slides)
+    obs <- layout_slider_listener(id, input, 
+                                  
+                                  # -- slide 1
+                                  card("Slide 1"), 
+                                  
+                                  # -- slide 2
+                                  layout_columns(
+                                    fill = F,
+                                    col_widths = c(4,8),
+                                    
+                                    p("Analyze the section with the slowest progress."),
+                                    
+                                    card(
+                                      fill = F,
+                                      plotOutput(ns("distance_ruler"), height = "200px"))),
+                                  
+                                  # -- slide 3
+                                  card("Slide 3"))
     
-    # -- slider listener
-    # event on toggles & dots
-    observeEvent(input$slider_event, {
-      
-      # -- extract target slide nb
-      target_slide <- gsub("toggle_", "", input$slider_event) |> gsub(pattern = "dot_", replacement = "")
-      
-      # -- close active slide
-      shinyjs::toggleClass(selector = '.slider-active', class = 'slider-active')
-      shinyjs::toggleClass(selector = '.slider-toggle-active', class = 'slider-toggle-active')
-      shinyjs::toggleClass(selector = '.slider-dot-on', class = 'slider-dot-on')
-      
-      # -- open target slide
-      shinyjs::toggleClass(selector = paste0('#slide-', target_slide), class = 'slider-active')
-      shinyjs::toggleClass(selector = paste0('#toggle_', target_slide), class = 'slider-toggle-active')
-      shinyjs::toggleClass(selector = paste0('#dot_', target_slide), class = 'slider-dot-on')
-      
-    })
     
     
   })
