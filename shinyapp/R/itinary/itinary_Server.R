@@ -4,7 +4,7 @@
 # Server logic
 # ------------------------------------------------------------------------------
 
-itinary_Server <- function(id, filename) {
+itinary_Server <- function(id, segments, filename) {
   moduleServer(id, function(input, output, session) {
     
     # --------------------------------------------------------------------------
@@ -20,34 +20,21 @@ itinary_Server <- function(id, filename) {
     
     
     # --------------------------------------------------------------------------
-    # Init
-    # --------------------------------------------------------------------------
-    
-    # -- load GPX file
-    track <- read_gpx(file.path(Sys.getenv("DATA_HOME"), filename))
-    
-    # -- compute segments & stats
-    track_segments <- track |>
-      pts_to_seg() |>
-      seg_stats()
-    
-    
-    # --------------------------------------------------------------------------
     # Computation & Summaries
     # --------------------------------------------------------------------------
     
     # -- compute summaries
-    elevation <- elevation_summary(track_segments)
-    breaks <- break_summary(track_segments)
-    milestones <- milestones_summary(track_segments, breaks)
+    elevation <- elevation_summary(segments)
+    breaks <- break_summary(segments)
+    milestones <- milestones_summary(segments, breaks)
     
     # -- compute distance
-    distance <- sum(track_segments$distance) / 1000
+    distance <- sum(segments$distance) / 1000
     
     # -- compute times
-    time_elapsed <- difftime(max(track$datetime), min(track$datetime), units = "hours")
-    time_activity <- time_elapsed - (sum(track_segments[track_segments$time > 20, ]$time) / 3600)
-    nb_day <- as.Date(max(track$datetime)) - as.Date(min(track$datetime)) + 1
+    time_elapsed <- difftime(max(segments$datetime_end), min(segments$datetime_start), units = "hours")
+    time_activity <- time_elapsed - (sum(segments[segments$time > 20, ]$time) / 3600)
+    nb_day <- as.Date(max(segments$datetime_end)) - as.Date(min(segments$datetime_start)) + 1
     
     
     # --------------------------------------------------------------------------
@@ -55,7 +42,7 @@ itinary_Server <- function(id, filename) {
     # --------------------------------------------------------------------------
 
     # -- debug
-    debug_track_segments <<- track_segments
+    debug_segments <<- segments
     debug_milestones <<- milestones
     debug_breaks <<- breaks
     
@@ -64,11 +51,11 @@ itinary_Server <- function(id, filename) {
     # Outputs
     # ----------------------------------------------------------------------------
     
-    # -- itinary title
+    # -- itinerary title
     output$title <- renderText(tail(unlist(strsplit(unlist(strsplit(filename, split = ".", fixed = T))[1], "_")), 1))
     
     # -- GPS points
-    output$nb_points <- renderText(nrow(track))
+    output$nb_points <- renderText(nrow(segments) + 1)
     
     # -- times
     output$time_elapsed <- renderText(paste0(floor(time_elapsed), "h", floor((time_elapsed - floor(time_elapsed)) * 60), "min"))
@@ -82,7 +69,7 @@ itinary_Server <- function(id, filename) {
     output$timeline <- renderUI(timeline(milestones))
     
     # -- track map
-    output$map <- renderLeaflet(m_track(track_segments, breaks))
+    output$map <- renderLeaflet(m_track(segments, breaks))
 
     # -- elevation
     output$elevation_up <- renderText(paste0(round(elevation['pos_gain'], digits = 0), "m"))
@@ -91,22 +78,22 @@ itinary_Server <- function(id, filename) {
     output$elevation_highest <- renderText(paste0(round(elevation['highest'], digits = 0), "m"))
     
     # -- elevation profile
-    output$elevation <- renderPlot(p_elevation(track_segments), bg = "transparent")
+    output$elevation <- renderPlot(p_elevation(segments), bg = "transparent")
     
     # -- speed
-    output$speed_max <- renderText(paste0(round(max(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+    output$speed_max <- renderText(paste0(round(max(segments$speed, na.rm = T), digits = 1), "km/h"))
     output$speed_average <- renderText(paste0(round(distance / as.numeric(time_activity), digits = 1), "km/h"))
-    output$speed_median <- renderText(paste0(round(median(track_segments$speed, na.rm = T), digits = 1), "km/h"))
+    output$speed_median <- renderText(paste0(round(median(segments$speed, na.rm = T), digits = 1), "km/h"))
     
     # -- speed profile
-    output$speed <- renderPlot(p_speed(track_segments), bg = "transparent")
+    output$speed <- renderPlot(p_speed(segments), bg = "transparent")
     
     
     # ----------------------------------------------------------------------------
     # Progress
     # ----------------------------------------------------------------------------
 
-    distances <- distance_summary(track_segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
+    distances <- distance_summary(segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
     output$distance_ruler <- renderPlot(p_distance_ruler(distances), bg = "transparent")
 
     

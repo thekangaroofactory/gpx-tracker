@@ -38,24 +38,32 @@ function(input, output, session) {
           # -- store
           cache_ids(c(cache_ids(), uuid))
           
-          # -- start module server
+          # -- load GPX file, compute segments & stats
           setProgress(
             value = 10,
-            message = "Load & analyze data")
+            message = "Load GPX data")
           
-          itinary_Server(id = uuid, filename = input$open_track)
+          track_segments <- read_gpx(file.path(Sys.getenv("DATA_HOME"), input$open_track)) |>
+            pts_to_seg() |>
+            seg_stats()
           
-          # -- ui
+          # -- start module server
+          setProgress(
+            value = 30,
+            message = "Analyze track")
+          
+          itinary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+          
+          # -- build ui
           setProgress(
             value = 60,
             message = "Build UI")
           
-          # -- build ui
           content <- layout_itinary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
           
           # -- insert tab
           setProgress(
-            value = 90,
+            value = 100,
             message = "Open tab")
           
           nav_insert(id = "nav",
