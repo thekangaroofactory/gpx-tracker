@@ -93,8 +93,9 @@ function(input, output, session) {
     nav_select(id = "nav", selected = "home")
     nav_remove(id = "nav", target = track_id)
     
-    # -- destroy module listener
+    # -- destroy module listener & inputs
     cache_obs()$destroy()
+    cleanup_inputs(id = track_id, input)
     
   })
   
