@@ -4,7 +4,7 @@
 # Server logic
 # ------------------------------------------------------------------------------
 
-itinary_Server <- function(id, segments, filename) {
+itinerary_Server <- function(id, segments, filename) {
   moduleServer(id, function(input, output, session) {
     
     # --------------------------------------------------------------------------

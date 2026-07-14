@@ -1,6 +1,6 @@
 
 
-layout_itinary <- function(id, title = "Itinary"){
+layout_itinerary <- function(id, title = "itinerary"){
   
   # -- namespace
   ns <- NS(id)

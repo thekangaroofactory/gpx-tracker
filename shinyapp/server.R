@@ -54,7 +54,7 @@ function(input, output, session) {
             value = 30,
             message = "Analyze track")
           
-          obs <- itinary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+          obs <- itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
           cache_obs(obs)
           
           # -- build ui
@@ -62,7 +62,7 @@ function(input, output, session) {
             value = 60,
             message = "Build UI")
           
-          content <- layout_itinary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
+          content <- layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
           
           # -- insert tab
           setProgress(
@@ -81,7 +81,7 @@ function(input, output, session) {
   # -- close itinerary (tab)
   observeEvent(input$close_track, {
     
-    cat("Close itinary", input$close_track, "\n")
+    cat("Close itinerary", input$close_track, "\n")
     
     # -- extract id
     track_id <- gsub("close_", "", input$close_track)
