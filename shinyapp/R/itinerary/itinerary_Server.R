@@ -94,8 +94,15 @@ itinerary_Server <- function(id, segments, filename) {
     # ----------------------------------------------------------------------------
 
     distances <- distance_summary(segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
-    output$distance_ruler <- renderPlot(p_distance_ruler(distances), bg = "transparent")
-
+    output$distance_ruler <- renderPlot(p_distance_ruler(distances, overnight = milestones |> filter(type == "overnight")), bg = "transparent")
+    
+    debug_distances <<- distances
+    
+    slowest_segment_id <- distances |> filter(time == max(time)) |> pull(section_id)
+    
+    str(
+      segments |> filter(id == slowest_segment_id))
+    
     # ----------------------------------------------------------------------------
     # Slider
     # ----------------------------------------------------------------------------
