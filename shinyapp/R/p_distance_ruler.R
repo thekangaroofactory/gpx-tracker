@@ -1,6 +1,6 @@
 
 
-p_distance_ruler <- function(data){
+p_distance_ruler <- function(data, overnight = NULL){
   
   # -- outlier threshold
   x <- summary(data$time)[c('1st Qu.', '3rd Qu.')]
@@ -18,15 +18,14 @@ p_distance_ruler <- function(data){
                  linewidth = 4,
                  colour = "#b5c098") +
     
-    # --
-    # ************************** HACk remove DEBUG data !!!!!!!!!!!!
-    # geom_segment(x = debug_milestones |> filter(type == "overnight") |> pull(datetime_start),
-    #              xend = debug_milestones |> filter(type == "overnight") |> pull(datetime_end),
-    #              y = 0,
-    #              yend = 0,
-    #              linewidth = 4,
-    #              linetype = "32",
-    #              colour = "#FFF") +
+    # -- add overnight time
+    geom_segment(x = overnight$datetime_start,
+                 xend = overnight$datetime_end,
+                 y = 0,
+                 yend = 0,
+                 lineend = "round",
+                 linewidth = 3,
+                 colour = "#d8dec9") +
     
     geom_segment(data = data |>
                    filter(time >= time_ceiling),
