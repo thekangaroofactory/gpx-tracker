@@ -4,7 +4,7 @@ layout_slider <- function(..., namespace = NULL){
   
   # -- get namespace
   ns <- NS(namespace)
-  event <- send_event("slider_event", id = namespace)
+  event <- slider_event("slider_event", id = namespace)
   
   # -- get slides
   slides <- list(...)
