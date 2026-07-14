@@ -96,6 +96,7 @@ function(input, output, session) {
     # -- destroy module listener & inputs
     cache_obs()$destroy()
     cleanup_inputs(id = track_id, input)
+    session$userData[[NS(track_id, "slider_active")]] <- NULL
     
   })
   

@@ -1,6 +1,6 @@
 
 
-layout_slider_listener <- function(namespace, input){
+layout_slider_listener <- function(namespace, input, session = getDefaultReactiveDomain()){
   
   # -- get namespace
   ns <- NS(namespace)
@@ -9,12 +9,21 @@ layout_slider_listener <- function(namespace, input){
   # event on toggles & dots
   observeEvent(input$slider_event, {
     
+    # -- init (first time it's fired)
+    if(is.null(session$userData[[ns("slider_active")]]))
+      session$userData[[ns("slider_active")]] <- "1"
+    
     # -- extract target slide nb
     target_slide <- gsub(".*?-", "", input$slider_event) |> 
       gsub(pattern = "toggle_", replacement = "") |> 
       gsub(pattern = "dot_", replacement = "")
     cat("Display slide =", target_slide, "\n")
-
+    
+    req(target_slide != session$userData[[ns("slider_active")]])
+    
+    # -- store
+    session$userData[[ns("slider_active")]] <- target_slide
+    
     # -- close slide
     shinyjs::toggleClass(selector = '.slider-active', class = 'slider-active')
     shinyjs::toggleClass(selector = '.toggle-active', class = 'toggle-active')
