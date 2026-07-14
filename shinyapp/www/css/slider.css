@@ -21,20 +21,20 @@
   
   display: inline-block;
   cursor: pointer;
-  background-color: grey;
+  background-color: #d8dec9;
   transition: background-color 0.5s;
   
 }
 
 .toggles li:hover {
   
-  background-color: cyan;
+  background-color: #c6cfb0;
   
 }
 
 .toggles li.toggle-active {
   
-  background-color: pink;
+  background-color: #b5c098;
   
 }
 
@@ -72,7 +72,7 @@
 /* -- active slide */
 .slider-active {
   
-  max-height: 600px;
+  max-height: 615px; /* otherwise dots go under the page footer... */
   
   opacity: 1;
   transform: translateX(0px);
