@@ -101,6 +101,7 @@ itinary_Server <- function(id, segments, filename) {
     # ----------------------------------------------------------------------------
 
     # -- listener (switch slides)
+    # also return value so that calling code can destroy it.
     obs <- layout_slider_listener(id, input)
     
   })

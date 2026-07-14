@@ -4,6 +4,7 @@ function(input, output, session) {
   
   # -- declare objects
   cache_ids <- reactiveVal()
+  cache_obs <- reactiveVal()
   
   # -- list available files
   gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx")
@@ -48,11 +49,13 @@ function(input, output, session) {
             seg_stats()
           
           # -- start module server
+          # return value is stored to destroy observer later
           setProgress(
             value = 30,
             message = "Analyze track")
           
-          itinary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+          obs <- itinary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+          cache_obs(obs)
           
           # -- build ui
           setProgress(
@@ -86,9 +89,12 @@ function(input, output, session) {
     # -- drop from cache
     cache_ids(cache_ids()[!cache_ids() %in% track_id])
     
-    # -- close
+    # -- close nav
     nav_select(id = "nav", selected = "home")
     nav_remove(id = "nav", target = track_id)
+    
+    # -- destroy module listener
+    cache_obs()$destroy()
     
   })
   
