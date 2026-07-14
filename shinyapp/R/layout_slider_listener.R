@@ -1,12 +1,9 @@
 
 
-layout_slider_listener <- function(namespace, input, ...){
+layout_slider_listener <- function(namespace, input){
   
   # -- get namespace
   ns <- NS(namespace)
-  
-  # -- list of slides
-  slides <- list(...)
   
   # -- slider listener
   # event on toggles & dots
@@ -18,19 +15,18 @@ layout_slider_listener <- function(namespace, input, ...){
       gsub(pattern = "dot_", replacement = "")
     cat("Slider display slide =", target_slide, "\n")
 
-    # -- new content
-    slide <- slides[[as.numeric(target_slide)]]
-
     # -- close slide
     shinyjs::toggleClass(selector = '.slider-active', class = 'slider-active')
     shinyjs::toggleClass(selector = '.toggle-active', class = 'toggle-active')
     
     # -- wait for css transition
-    Sys.sleep(0.75)
+    Sys.sleep(0.5)
     
-    # -- replace body / slide content
-    removeUI(selector = paste0('#', ns('slide')), immediate = T)
-    insertUI(selector = paste0('#', ns('slider')), where = "afterBegin", ui = div(id = ns("slide"), slide))
+    # -- set active slide
+    shinyjs::hide(selector = paste0('#', ns('slide_'), 1))
+    shinyjs::hide(selector = paste0('#', ns('slide_'), 2))
+    shinyjs::hide(selector = paste0('#', ns('slide_'), 3))
+    shinyjs::show(selector = paste0('#', ns('slide_'), target_slide))
     
     # -- open slide
     shinyjs::toggleClass(selector = paste0('#', ns('slider')), class = 'slider-active')

@@ -96,32 +96,12 @@ itinary_Server <- function(id, segments, filename) {
     distances <- distance_summary(segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
     output$distance_ruler <- renderPlot(p_distance_ruler(distances), bg = "transparent")
 
-    
     # ----------------------------------------------------------------------------
     # Slider
     # ----------------------------------------------------------------------------
 
     # -- listener (switch slides)
-    obs <- layout_slider_listener(id, input, 
-                                  
-                                  # -- slide 1
-                                  card("Slide 1"), 
-                                  
-                                  # -- slide 2
-                                  layout_columns(
-                                    fill = F,
-                                    col_widths = c(4,8),
-                                    
-                                    p("Analyze the section with the slowest progress."),
-                                    
-                                    card(
-                                      fill = F,
-                                      plotOutput(ns("distance_ruler"), height = "200px"))),
-                                  
-                                  # -- slide 3
-                                  card("Slide 3"))
-    
-    
+    obs <- layout_slider_listener(id, input)
     
   })
 }

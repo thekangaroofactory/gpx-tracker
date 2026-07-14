@@ -32,8 +32,9 @@ layout_itinary <- function(id, title = "Itinary"){
     # -- the slider component
     
     layout_slider(
+      namespace = id,
       
-      ui = layout_sidebar(
+      track = layout_sidebar(
         # -- fixing height on the component itself otherwise plots / content won't fit inside it.
         # height is set on the slider-body on CSS side to push the dots after the body.
         height = "620px",
@@ -74,7 +75,15 @@ layout_itinary <- function(id, title = "Itinary"){
                             div(style = "margin: auto;", icon("gauge-simple"), textOutput(ns("speed_average"), inline = T)),
                             div(style = "margin: auto;", icon("gauge"), textOutput(ns("speed_median"), inline = T)))))))),
       
-      namespace = id
+      progress = layout_columns(
+          fill = F,
+          col_widths = c(4,8),
+          
+          p("Analyze the section with the slowest progress."),
+          
+          card(
+            fill = F,
+            plotOutput(ns("distance_ruler"), height = "200px")))
       
     ) # end slider
     
