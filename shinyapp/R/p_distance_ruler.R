@@ -3,8 +3,10 @@
 p_distance_ruler <- function(data, overnight = NULL){
   
   # -- outlier threshold
-  x <- summary(data$time)[c('1st Qu.', '3rd Qu.')]
-  time_ceiling <- x[2] + 1.5 * (x[2] - x[1])
+  # x <- summary(data$time)[c('1st Qu.', '3rd Qu.')]
+  # time_ceiling <- x[2] + 1.5 * (x[2] - x[1])
+  
+  # -- compute axis breaks
   axis_x_breaks <- c(min(data$datetime_start), data$datetime_end)
   
   # -- init plot
@@ -31,10 +33,10 @@ p_distance_ruler <- function(data, overnight = NULL){
   
   # -- add slowest / fastest sections
   p <- p + geom_segment(data = data |>
-                          filter(time >= time_ceiling),
+                          filter(time == max(time)),
                         aes(
                           x = datetime_start, 
-                          xend = datetime_end), 
+                          xend = datetime_end),
                         y = 0, 
                         yend = 0,
                         lineend = "round",
@@ -60,7 +62,6 @@ p_distance_ruler <- function(data, overnight = NULL){
   
   # -- scale & theme
   p + scale_x_datetime(breaks = axis_x_breaks, labels = ~format(axis_x_breaks, "%Hh%M"), limits = c(min(axis_x_breaks), NA)) +
-    # xlim(min(axis_x_breaks), NA) +
     ylim(c(0, 0.5)) +
     
     plot_theme() +
