@@ -93,7 +93,7 @@ itinerary_Server <- function(id, segments, filename) {
     # Progress
     # ----------------------------------------------------------------------------
 
-    distances <- distance_summary(segments, dist = 10, overnight = milestones |> filter(type == "overnight"))
+    distances <- distance_summary(segments, dist = ifelse(distance >= 50, 10, 5), overnight = milestones |> filter(type == "overnight"))
     output$distance_ruler <- renderPlot(p_distance_ruler(distances, overnight = milestones |> filter(type == "overnight")), bg = "transparent")
     
     debug_distances <<- distances
