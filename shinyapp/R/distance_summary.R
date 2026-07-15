@@ -29,7 +29,7 @@ distance_summary <- function(data, n = 4, dist = NULL, overnight = NULL){
     slice(sort(c(1, idx, nrow(data)))) |>
     select(c("segment_id", "datetime_start", "datetime_end", "cum_distance")) |>
     
-    mutate(segmend_id_end = lead(segment_id),
+    mutate(segment_id_end = lead(segment_id),
            datetime_end = lead(datetime_start),
            time = datetime_end - datetime_start,
            cum_distance = lead(cum_distance)) |>
