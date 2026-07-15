@@ -53,8 +53,10 @@ p_distance_ruler <- function(data, overnight = NULL){
                  colour = "green")
   
   # -- add section markers
-  p <- p +geom_point(aes(y = 0.1), shape = 25) +
-    geom_text(mapping = aes(label = round(cum_distance, digits = 0)), y = 0.2)
+  p <- p + geom_point(aes(y = 0.1), shape = 25) +
+    geom_text(mapping = aes(label = round(cum_distance, digits = 0)), y = 0.2) +
+    annotate("point", x = min(data$datetime_start), y = 0.1, shape = 25) +
+    annotate("text", x = min(data$datetime_start), y = 0.2, label = "0")
   
   # -- scale & theme
   p + scale_x_datetime(breaks = axis_x_breaks, labels = ~format(axis_x_breaks, "%Hh%M"), limits = c(min(axis_x_breaks), NA)) +
