@@ -28,10 +28,12 @@ distance_summary <- function(data, n = 4, dist = NULL, overnight = NULL){
   # -- build summary
   df <- as.data.frame(data) |> 
     slice(c(1, unlist(idx), nrow(data))) |>
-    select(c("datetime_start", "datetime_end", "cum_distance"))|>
-    mutate(datetime_start = lag(datetime_start),
+    select(c("segment_id", "datetime_start", "datetime_end", "cum_distance"))|>
+    mutate(segment_id_start = lag(segment_id),
+           datetime_start = lag(datetime_start),
            time = datetime_end - datetime_start) |>
-    rename(distance = cum_distance) |>
+    rename(distance = cum_distance,
+           segment_id_end = segment_id) |>
     slice(-1) |>
     mutate(section_id = row_number(), .before = 1)
   
