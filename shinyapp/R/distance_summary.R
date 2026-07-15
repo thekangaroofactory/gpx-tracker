@@ -22,19 +22,20 @@ distance_summary <- function(data, n = 4, dist = NULL, overnight = NULL){
     n <- max(data$cum_distance) / dist
   
   # -- get list of index
-  idx <- lapply(1:(n - 1) * dist, function(x)
-    which.min(abs(data$cum_distance - x)))
+  idx <- unlist(lapply(1:(n - 1) * dist, function(x) which.min(abs(data$cum_distance - x))))
   
   # -- build summary
   df <- as.data.frame(data) |> 
-    slice(c(1, unlist(idx), nrow(data))) |>
-    select(c("segment_id", "datetime_start", "datetime_end", "cum_distance"))|>
-    mutate(segment_id_start = lag(segment_id),
-           datetime_start = lag(datetime_start),
-           time = datetime_end - datetime_start) |>
-    rename(distance = cum_distance,
-           segment_id_end = segment_id) |>
-    slice(-1) |>
+    slice(sort(c(1, idx, nrow(data)))) |>
+    select(c("segment_id", "datetime_start", "datetime_end", "cum_distance")) |>
+    
+    mutate(segmend_id_end = lead(segment_id),
+           datetime_end = lead(datetime_start),
+           time = datetime_end - datetime_start,
+           cum_distance = lead(cum_distance)) |>
+    
+    rename(segment_id_start = segment_id) |>
+    slice(-n()) |>
     mutate(section_id = row_number(), .before = 1)
   
   # -- remove overnight break
@@ -47,8 +48,4 @@ distance_summary <- function(data, n = 4, dist = NULL, overnight = NULL){
   # -- return
   df
   
-  
 }
-
-
-

@@ -5,6 +5,7 @@ p_distance_ruler <- function(data, overnight = NULL){
   # -- outlier threshold
   x <- summary(data$time)[c('1st Qu.', '3rd Qu.')]
   time_ceiling <- x[2] + 1.5 * (x[2] - x[1])
+  axis_x_breaks <- c(min(data$datetime_start), data$datetime_end)
   
   # -- init plot
   p <- ggplot(data, 
@@ -53,10 +54,11 @@ p_distance_ruler <- function(data, overnight = NULL){
   
   # -- add section markers
   p <- p +geom_point(aes(y = 0.1), shape = 25) +
-    geom_text(mapping = aes(label = round(distance, digits = 0)), y = 0.2)
+    geom_text(mapping = aes(label = round(cum_distance, digits = 0)), y = 0.2)
   
   # -- scale & theme
-  p + scale_x_continuous(breaks = data$datetime_end, labels = ~format(data$datetime_end, "%Hh%M")) +
+  p + scale_x_datetime(breaks = axis_x_breaks, labels = ~format(axis_x_breaks, "%Hh%M"), limits = c(min(axis_x_breaks), NA)) +
+    # xlim(min(axis_x_breaks), NA) +
     ylim(c(0, 0.5)) +
     
     plot_theme() +
