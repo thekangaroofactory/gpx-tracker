@@ -37,7 +37,7 @@ milestones_summary <- function(track, breaks){
   }))
   
   milestones |>
-    select(-c(slope, elevation_gain, cum_speed, speed, distance, time)) |>
+    select(-c(slope, elevation_gain, cummean_speed, speed, distance, time)) |>
     arrange(segment_id)
     
 }

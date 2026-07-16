@@ -29,7 +29,7 @@ seg_stats <- function(track){
   # -- compute speed (km/h)
   track <- track |>
     mutate(speed = distance / time * 3.6,
-           cum_speed = cummean(speed))
+           cummean_speed = cummean(speed))
   
   # -- add elevation gain (m)
   track <- track |>
