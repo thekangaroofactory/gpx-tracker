@@ -25,8 +25,8 @@ layout_slider_listener <- function(namespace, input, session = getDefaultReactiv
     session$userData[[ns("slider_active")]] <- target_slide
     
     # -- close slide
-    shinyjs::toggleClass(selector = '.slider-active', class = 'slider-active')
-    shinyjs::toggleClass(selector = '.toggle-active', class = 'toggle-active')
+    shinyjs::toggleClass(selector = paste0('#', ns('slider')), class = 'slider-active')
+    shinyjs::toggleClass(selector = paste0('[id^=', ns('toggle_'), '].toggle-active'), class = 'toggle-active')
     
     # -- wait for css transition
     Sys.sleep(0.5)
