@@ -24,17 +24,20 @@ milestones_summary <- function(track, breaks){
   milestones$city <- unlist(lapply(milestones$geometry_start, function(geometry){
   
     # -- call API
-    osm_data <- reverse_geocoding(lng = st_coordinates(geometry)[, 1], 
-                                  lat = st_coordinates(geometry)[, 2],
-                                  zoom = 10)
+    # osm_data <- reverse_geocoding(lng = st_coordinates(geometry)[, 1], 
+    #                               lat = st_coordinates(geometry)[, 2],
+    #                               zoom = 10)
+    osm_data <- list()
     
     # -- return (depending on result type)
-    osm_data$address[osm_data$addresstype]
+    if(length(osm_data))
+      osm_data$address[osm_data$addresstype]
+    else NULL
     
   }))
   
   milestones |>
-    select(-c(slope, elevation_gain, cum_speed, speed, distance, time)) |>
+    select(-c(slope, elevation_gain, cummean_speed, speed, distance, time)) |>
     arrange(segment_id)
     
 }

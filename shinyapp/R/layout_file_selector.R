@@ -20,7 +20,7 @@ layout_file_selector <- function(files){
       
       # -- return
       card(
-        card_header("Itinary"),
+        card_header("itinerary"),
         x,
         card_footer(actionLink(inputId = x, 
                                label = "open",

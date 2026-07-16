@@ -20,7 +20,7 @@ p_speed <- function(data){
     geom_area(fill = "#b5c098") +
     
     # -- cumulative mean
-    geom_line(mapping = aes(y = cum_speed),
+    geom_line(mapping = aes(y = cummean_speed),
               color = "#8a8661") +
     
     # -- maximum speed

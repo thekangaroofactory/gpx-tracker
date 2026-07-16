@@ -1,0 +1,90 @@
+
+/* -----------------------------------------------------------------------------
+   This is the CSS style for the slider component
+----------------------------------------------------------------------------- */
+
+/* -- the component (wrapper) ----------------------------------------------- */
+.slider {
+  
+  overflow-x:hidden;  
+
+}
+
+/* -- the component's header & footer --------------------------------------- */
+.toggles {
+  
+  text-align: center;
+  
+}
+
+.toggles li {
+  
+  display: inline-block;
+  cursor: pointer;
+  background-color: #d8dec9;
+  transition: background-color 0.5s;
+  
+}
+
+.toggles li:hover {
+  
+  background-color: #c6cfb0;
+  
+}
+
+.toggles li.toggle-active {
+  
+  background-color: #b5c098;
+  
+}
+
+/* -- header specific --------------- */
+.toggles-header li {
+  
+  margin: 0 10px;
+  padding: 3px 25px;
+
+  border-radius: 20px;
+  
+}
+
+/* -- footer specific --------------- */
+.toggles-footer li {
+  
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  
+}
+
+/* -- the component's body (slide) ------------------------------------------ */
+.slider-body {
+
+  min-height: 400px;
+  max-height: 400px;
+  opacity: 0;
+  transform: translateX(200%);
+  
+  transition: all 0.75s ease-out allow-discrete;
+
+}
+
+/* -- active slide */
+.slider-active {
+  
+  max-height: 615px; /* otherwise dots go under the page footer... */
+  
+  opacity: 1;
+  transform: translateX(0px);
+  
+  transition: all 0.75s ease-out allow-discrete;
+  
+}
+
+@starting-style {
+  .slider-active {
+    
+    opacity: 0;
+    
+  }
+}
