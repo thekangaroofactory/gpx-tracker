@@ -27,10 +27,7 @@ layout_itinerary <- function(id, title = "itinerary"){
       p("Elapsed time:", textOutput(ns("time_elapsed"), inline = T)),
       p("Activity time:", textOutput(ns("time_activity"), inline = T))),
     
-    
-    # **************************************************************************
     # -- the slider component
-    
     layout_slider(
       namespace = id,
       
@@ -76,17 +73,30 @@ layout_itinerary <- function(id, title = "itinerary"){
                             div(style = "margin: auto;", icon("gauge"), textOutput(ns("speed_median"), inline = T)))))))),
       
       progress = layout_columns(
+        fill = F,
+        col_widths = c(4,8),
+        
+        p("Analyze progress throughout the track."),
+        
+        card(
           fill = F,
-          col_widths = c(4,8),
-          
-          p("Analyze the section with the slowest progress."),
-          
-          card(
-            fill = F,
-            plotOutput(ns("distance_ruler"), height = "200px")))
+          plotOutput(ns("distance_ruler"), height = "200px")),
+        
+        card(
+          height = "300px",
+          p("Slowest section"),
+          leafletOutput(ns("section_slow"))),
+        
+        
+        card(
+          height = "300px",
+          p("Fastest section"),
+          leafletOutput(ns("section_fast")))
+        
+      )
       
-    ) # end slider
+    ) # layout_slider
     
-  )
+  ) # nav_panel
   
 }

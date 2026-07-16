@@ -63,6 +63,9 @@ itinerary_Server <- function(id, segments, filename) {
     time_activity <- time_elapsed - (sum(segments[segments$time > 20, ]$time) / 3600)
     nb_day <- as.Date(max(segments$datetime_end)) - as.Date(min(segments$datetime_start)) + 1
     
+    # -- speed
+    speed_average <- round(distance / as.numeric(time_activity), digits = 1)
+    
     
     # --------------------------------------------------------------------------
     # Outputs
@@ -95,7 +98,9 @@ itinerary_Server <- function(id, segments, filename) {
     output$timeline <- renderUI(timeline(milestones))
     
     # -- track map
-    output$map <- renderLeaflet(m_track(segments, breaks))
+    # saved as an object for reuse purpose
+    map_track <- m_track(segments, breaks)
+    output$map <- renderLeaflet(map_track)
     
     
     # --------------------------------------------------------------------------
@@ -118,7 +123,7 @@ itinerary_Server <- function(id, segments, filename) {
     
     # -- speed stats
     output$speed_max <- renderText(paste0(round(max(segments$speed, na.rm = T), digits = 1), "km/h"))
-    output$speed_average <- renderText(paste0(round(distance / as.numeric(time_activity), digits = 1), "km/h"))
+    output$speed_average <- renderText(paste0(speed_average, "km/h"))
     output$speed_median <- renderText(paste0(round(median(segments$speed, na.rm = T), digits = 1), "km/h"))
     
     # -- speed profile
@@ -136,13 +141,11 @@ itinerary_Server <- function(id, segments, filename) {
     # ***************** 
     # this section will go into the compute phase on top
     
-    slowest_segment_id <- distances |> filter(time == max(time)) |> pull(section_id)
-    fastest_segment_id <- distances |> filter(time == min(time)) |> pull(section_id)
     
-    slowest_section <- unlist(distances |> filter(time == max(time)) |> select(c("segment_id_start", "segment_id_end")))
-    foo <- segments[slowest_section[[1]]:slowest_section[[2]], ]
-    
-    output$section_slowest <- renderLeaflet(m_track(foo))
+    output$section_slow <- renderLeaflet(m_section(map_track, section = section(segments, distances)))
+    output$section_fast <- renderLeaflet(m_section(map_track, 
+                                                   section = section(segments, distances, type = "fast"),
+                                                   type = "fast"))
     
     
     # --------------------------------------------------------------------------
