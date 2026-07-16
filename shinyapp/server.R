@@ -31,7 +31,7 @@ function(input, output, session) {
       withProgress(
         min = 0,
         max = 100,
-        value = 10,
+        value = 0,
         message = "Init",
         
         {
@@ -41,7 +41,7 @@ function(input, output, session) {
           
           # -- load GPX file, compute segments & stats
           setProgress(
-            value = 10,
+            value = 5,
             message = "Load GPX data")
           
           track_segments <- read_gpx(file.path(Sys.getenv("DATA_HOME"), input$open_track)) |>
@@ -51,15 +51,15 @@ function(input, output, session) {
           # -- start module server
           # return value is stored to destroy observer later
           setProgress(
-            value = 30,
-            message = "Analyze track")
+            value = 10,
+            message = "Launch track module")
           
           obs <- itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
           cache_obs(obs)
           
           # -- build ui
           setProgress(
-            value = 60,
+            value = 80,
             message = "Build UI")
           
           content <- layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
