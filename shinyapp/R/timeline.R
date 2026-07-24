@@ -30,7 +30,7 @@ timeline <- function(steps){
         gap = 0,
         div(icon(icon_list[[x$type]]), tags$b(x$type)),
         format(x$datetime_start, "%Y-%m-%d %H:%M"), br(),
-        x$city))
+        if(!is.na(x$city)) x$city))
     
   })
     

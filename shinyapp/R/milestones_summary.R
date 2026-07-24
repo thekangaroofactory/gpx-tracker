@@ -32,7 +32,7 @@ milestones_summary <- function(track, breaks){
     # -- return (depending on result type)
     if(length(osm_data))
       osm_data$address[osm_data$addresstype]
-    else NULL
+    else NA
     
   }))
   
