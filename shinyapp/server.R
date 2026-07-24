@@ -7,10 +7,11 @@ function(input, output, session) {
   cache_obs <- reactiveVal()
   
   # -- list available files
-  gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx")
+  gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx", recursive = TRUE)
   
   # -- file selector layout
-  output$file_selector <- renderUI(layout_file_selector(files = basename(gpx_files)))
+  output$file_selector_done <- renderUI(layout_file_selector(files = gpx_files[!grepl("planned", gpx_files)]))
+  output$file_selector_planned <- renderUI(layout_file_selector(files = gpx_files[grepl("planned", gpx_files)]))
   
   # -- file selector listener
   observeEvent(input$open_track, {

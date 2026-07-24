@@ -21,7 +21,7 @@ layout_file_selector <- function(files){
       # -- return
       card(
         card_header("itinerary"),
-        x,
+        basename(x),
         card_footer(actionLink(inputId = x, 
                                label = "open",
                                onclick = 'Shiny.setInputValue(\"open_track\", this.id, {priority: \"event\"})')))}))
