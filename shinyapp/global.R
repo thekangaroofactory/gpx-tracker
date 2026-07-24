@@ -12,5 +12,9 @@ library(ggplot2)
 ktools::source_code("./R")
 
 # -- params
-app_version <- "v1.0"
+app_version <- "v1.2"
 DEBUG <- TRUE
+
+# -- settings
+DISTANCE_ANOMALY <- 100
+SPEED_ANOMALY <- 50

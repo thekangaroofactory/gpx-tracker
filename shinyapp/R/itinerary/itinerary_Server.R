@@ -36,6 +36,19 @@ itinerary_Server <- function(id, segments, filename) {
     milestones <- milestones_summary(segments, breaks)
     distances <- distance_summary(segments, dist = ifelse(distance >= 50, 10, 5), overnight = milestones |> filter(type == "overnight"))
     
+    # -- compute anomalies
+    fu_speed <- segments |> filter(speed > SPEED_ANOMALY)
+    if(nrow(fu_speed) > 0)
+      warning("Speed anomaly detected: ", paste(fu_speed$speed, collapse = " / "), call. = F)
+    
+    fu_distance <- segments |> filter(distance > DISTANCE_ANOMALY)
+    if(nrow(fu_distance) > 0)
+      warning("Distance anomaly detected: ", paste(fu_distance$distance, collapse = " / "), call. = F)
+    
+    fu_speed_start <- segments |> filter(segment_id == 1 & speed > 20)
+    if(nrow(fu_speed_start) > 0)
+      warning("Speed / start anomaly detected: ", fu_speed_start$speed, call. = F)
+    
     
     # --------------------------------------------------------------------------
     # Debug
@@ -100,6 +113,11 @@ itinerary_Server <- function(id, segments, filename) {
     # -- track map
     # saved as an object for reuse purpose
     map_track <- m_track(segments, breaks)
+    
+    # -- add anomaly layer
+    map_track <- m_anomalies(map = map_track, speed = fu_speed, distance = fu_distance, start = fu_speed_start)
+    
+    # -- the main map
     output$map <- renderLeaflet(map_track)
     
     
@@ -121,13 +139,17 @@ itinerary_Server <- function(id, segments, filename) {
     # Speed
     # --------------------------------------------------------------------------
     
+    # -- cleanup
+    c_segments <- segments |> filter(!segment_id %in% fu_speed$segment_id,
+                                     !segment_id %in% fu_speed_start$segment_id)
+    
     # -- speed stats
-    output$speed_max <- renderText(paste0(round(max(segments$speed, na.rm = T), digits = 1), "km/h"))
+    output$speed_max <- renderText(paste0(round(max(c_segments$speed, na.rm = T), digits = 1), "km/h"))
     output$speed_average <- renderText(paste0(speed_average, "km/h"))
-    output$speed_median <- renderText(paste0(round(median(segments$speed, na.rm = T), digits = 1), "km/h"))
+    output$speed_median <- renderText(paste0(round(median(c_segments$speed, na.rm = T), digits = 1), "km/h"))
     
     # -- speed profile
-    output$speed <- renderPlot(p_speed(segments), bg = "transparent")
+    output$speed <- renderPlot(p_speed(c_segments), bg = "transparent")
     
     
     # --------------------------------------------------------------------------
