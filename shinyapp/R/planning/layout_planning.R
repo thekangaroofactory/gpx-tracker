@@ -18,6 +18,15 @@ layout_planning <- function(id, title = "Planning"){
         h1(textOutput(ns("title"))),
         actionLink(inputId = paste0("close_", id), label = "close", onclick = 'Shiny.setInputValue(\"close_track\", this.id, {priority: \"event\"})')),
 
+    # -- track info
+    layout_column_wrap(
+      fill = F,
+      p(textOutput(ns("nb_day"), inline = T), "itinerary"),
+      p("Distance:", textOutput(ns("distance"), inline = T)),
+      p(textOutput(ns("nb_points"), inline = T), "GPS points"),
+      p("Expected time:", textOutput(ns("time_expected"), inline = T))),
+    
+    # -- main content
     leafletOutput(ns("map"))
     
   ) # nav_panel
