@@ -45,9 +45,17 @@ function(input, output, session) {
             value = 5,
             message = "Load GPX data")
           
+          # -- is planned or done?
+          planned_track <- grepl("planned", input$open_track)
+          
+          # -- read file & add common stats
           track_segments <- read_gpx(file.path(Sys.getenv("DATA_HOME"), input$open_track)) |>
             pts_to_seg() |>
             seg_stats()
+          
+          # -- add speed (only for finish ones)
+          if(!planned_track)
+            track_segments <- speed_stats(track_segments)
           
           # -- start module server
           # return value is stored to destroy observer later
@@ -55,7 +63,10 @@ function(input, output, session) {
             value = 10,
             message = "Launch track module")
           
-          obs <- itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+          obs <- if(planned_track)
+            planning_Server(id = uuid, segments = track_segments, title = basename(input$open_track))
+          else
+            itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
           cache_obs(obs)
           
           # -- build ui
@@ -63,7 +74,10 @@ function(input, output, session) {
             value = 80,
             message = "Build UI")
           
-          content <- layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
+          content <- if(planned_track)
+            layout_planning(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", basename(input$open_track)))
+          else
+            layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
           
           # -- insert tab
           setProgress(
@@ -95,7 +109,8 @@ function(input, output, session) {
     nav_remove(id = "nav", target = track_id)
     
     # -- destroy module listener & inputs
-    cache_obs()$destroy()
+    if(!is.null(cache_obs()))
+      cache_obs()$destroy()
     cleanup_inputs(id = track_id, input)
     session$userData[[NS(track_id, "slider_active")]] <- NULL
     
