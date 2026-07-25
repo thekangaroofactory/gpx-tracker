@@ -33,6 +33,10 @@ planning_Server <- function(id, segments, title) {
     # -- base map
     m_baseline <- m_track(segments)
     
+    # -- bounds
+    bounds <- segments |> track_bounds() |> popup_label() |> popup_leg()
+    m_baseline <- m_baseline |> m_start_finish(bounds)
+    
     
     # --------------------------------------------------------------------------
     # Manage legs
