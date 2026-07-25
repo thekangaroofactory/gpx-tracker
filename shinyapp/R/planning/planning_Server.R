@@ -90,12 +90,31 @@ planning_Server <- function(id, segments, title) {
     # Map
     # --------------------------------------------------------------------------
     
-    # -- track map
+    # -- the map
     output$map <- renderLeaflet(m_baseline)
     
+    # -- map click listener
     observeEvent(input$map_click, {
       
-      str(input$map_click)
+      # -- get nearest segment
+      idx <- nearest_index(segments, lng = input$map_click$lng, lat = input$map_click$lat)
+      x <- segments |> filter(segment_id == idx)
+      
+      # -- update map
+      leafletProxy("map", session) |>
+      
+        # -- cleanup previous marker
+        removeMarker(layerId = "click") |>
+      
+        # -- add targets
+        addMarkers(data = x,
+                   lng = ~st_coordinates(geometry_end)[,1],
+                   lat = ~st_coordinates(geometry_end)[,2],
+                   layerId = "click",
+                   popup = paste(actionLink(inputId = ns(paste0("add_leg_", idx)), 
+                                      label = "Add leg", 
+                                      onclick = paste0('Shiny.setInputValue(\"', ns("create_leg"), '\", this.id, {priority: \"event\"})'))),
+                   label = ~paste(round(cum_distance, digits = 0), "km"))
       
     })
     
