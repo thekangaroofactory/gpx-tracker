@@ -71,8 +71,8 @@ planning_Server <- function(id, segments, title) {
         
         # -- add targets
         addAwesomeMarkers(data = targets,
-                          lng = ~st_coordinates(geometry_start)[,1],
-                          lat = ~st_coordinates(geometry_start)[,2],
+                          lng = ~st_coordinates(geometry_end)[,1],
+                          lat = ~st_coordinates(geometry_end)[,2],
                           group = "leg_target",
                           icon = i_leg_target,
                           label = ~paste(round(cum_distance - ref_distance, digits = 0), "km"),
