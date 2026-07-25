@@ -29,7 +29,36 @@ planning_Server <- function(id, segments, title) {
     # -- compute times
     time_elapsed <- difftime(max(segments$datetime_end), min(segments$datetime_start), units = "hours")
     nb_day <- trunc(distance / c(LEG_DISTANCE_MAX, LEG_DISTANCE_MIN))
+    
+    # --------------------------------------------------------------------------
+    # Manage legs
+    # --------------------------------------------------------------------------
 
+    legs <- readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv"))
+    
+    observeEvent(input$add_leg, {
+
+      # -- compute targets
+      targets <- segments |> filter(segment_id %in% leg_targets(segments, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
+      bounds <- bounding_box(targets)
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        
+        # -- add targets
+        addMarkers(data = targets,
+                   lng = ~st_coordinates(geometry_start)[,1],
+                   lat = ~st_coordinates(geometry_start)[,2],
+                   label = ~paste(round(cum_distance, digits = 0), "km")) |>
+        
+        # -- zoom
+        flyToBounds(lng1 = bounds[['lng1']],
+                    lat1 = bounds[['lat1']],
+                    lng2 = bounds[['lng2']],
+                    lat2 = bounds[['lat2']])
+        
+    })
+    
     
     # --------------------------------------------------------------------------
     # Outputs

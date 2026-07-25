@@ -26,6 +26,8 @@ layout_planning <- function(id, title = "Planning"){
       p(textOutput(ns("nb_points"), inline = T), "GPS points"),
       p("Expected time:", textOutput(ns("time_expected"), inline = T))),
     
+    actionButton(inputId = ns("add_leg"), "+ leg", width = "200px"),
+    
     # -- main content
     leafletOutput(ns("map"))
     
