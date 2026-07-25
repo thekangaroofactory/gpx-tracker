@@ -28,17 +28,13 @@ m_start_finish <- function(map, data){
                       lng = ~st_coordinates(geometry_start)[,1],
                       lat = ~st_coordinates(geometry_start)[,2],
                       icon = i_start,
-                      popup = ~paste(sep = "<br/>",
-                                     "<b>Start</b>",
-                                     format(datetime_start,'%Y-%m-%d, %H:%M:%S'))) |>
+                      popup = ~popup) |>
     
     # -- add finish point
     addAwesomeMarkers(data = tail(data, n = 1L),
                       lng = ~st_coordinates(geometry_end)[,1],
                       lat = ~st_coordinates(geometry_end)[,2],
                       icon = i_finish,
-                      popup = ~paste(sep = "<br/>",
-                                     "<b>Finish</b>",
-                                     format(datetime_start,'%Y-%m-%d, %H:%M:%S')))
+                      popup = ~popup)
   
 }
