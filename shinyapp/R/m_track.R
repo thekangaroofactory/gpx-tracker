@@ -42,7 +42,7 @@ m_track <- function(data, breaks = NULL){
     addPolylines(lng = ~c(st_coordinates(geometry_start)[,1], st_coordinates(tail(geometry_end, 1))[,1]),
                  lat = ~c(st_coordinates(geometry_start)[,2], st_coordinates(tail(geometry_end, 1))[,2]), 
                  weight = 2, 
-                 color = "black") %>%
+                 color = "black")
     
 
   # -- add breaks layer
