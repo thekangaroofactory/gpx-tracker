@@ -67,3 +67,18 @@ popup_leg <- function(segments, ns){
     mutate(popup = replace_when(popup, label %in% c("Start", "Leg") ~paste(popup, helper(segment_id), sep = "<br/>")))
   
 }
+
+
+
+popup_target <- function(segments, ns){          
+  
+  helper <- function(x)
+    lapply(x, function(x)
+      paste(actionLink(inputId = ns(paste0("leg_target_", x)),
+                       label = "Clear targets",
+                       onclick = paste0('Shiny.setInputValue(\"', ns("clear_group"), '\", this.id, {priority: \"event\"})'))))
+  
+  segments |>
+    mutate(popup = helper(segment_id))
+  
+}

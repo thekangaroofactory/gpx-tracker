@@ -48,23 +48,32 @@ planning_Server <- function(id, segments, title) {
     # -- button listener (to replace)
     observeEvent(input$init_leg, {
 
-      # -- extract input value
-      event <- split_input(input$init_leg)
-      
+      # -- extract input value (reference segment id)
+      ref_id <- split_input(input$init_leg)['value']
+      ref_distance <- if(ref_id == 1) 0 else segments |> filter(segment_id == ref_id) |> pull(cum_distance)
       
       # -- compute targets
-      targets <- segments |> filter(segment_id %in% leg_targets(segments, start = event['value'], min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
+      targets <- segments |> filter(segment_id %in% leg_targets(segments, start = ref_id, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
+      targets <- targets |> popup_target(ns = ns)
       bounds <- bounding_box(targets)
+      
+      # -- icon
+      i_leg_target <- makeAwesomeIcon(
+        icon = "location-crosshairs",
+        library = "fa",
+        markerColor = "lightgray")
       
       # -- update map
       leafletProxy("map", session) |>
         
         # -- add targets
-        addMarkers(data = targets,
-                   lng = ~st_coordinates(geometry_start)[,1],
-                   lat = ~st_coordinates(geometry_start)[,2],
-                   group = "leg_target",
-                   label = ~paste(round(cum_distance, digits = 0), "km")) |>
+        addAwesomeMarkers(data = targets,
+                          lng = ~st_coordinates(geometry_start)[,1],
+                          lat = ~st_coordinates(geometry_start)[,2],
+                          group = "leg_target",
+                          icon = i_leg_target,
+                          label = ~paste(round(cum_distance - ref_distance, digits = 0), "km"),
+                          popup = ~popup) |>
         
         # -- zoom
         flyToBounds(lng1 = bounds[['lng1']],
@@ -167,6 +176,19 @@ planning_Server <- function(id, segments, title) {
       
       
     }, ignoreInit = TRUE)
+    
+    
+    # -- clear group
+    observeEvent(input$clear_group, {
+      
+      # -- extract group name from input
+      group <- split_input(input$clear_group)[['action']]
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        clearGroup(group)
+      
+    })
     
     
     # -- return
