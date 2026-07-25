@@ -38,8 +38,10 @@ planning_Server <- function(id, segments, title) {
     # Manage legs
     # --------------------------------------------------------------------------
 
-    legs <- readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv"))
+    # -- read leg file
+    legs <- reactiveVal(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")))
     
+    # -- button listener (to replace)
     observeEvent(input$add_leg, {
 
       # -- compute targets
@@ -53,6 +55,7 @@ planning_Server <- function(id, segments, title) {
         addMarkers(data = targets,
                    lng = ~st_coordinates(geometry_start)[,1],
                    lat = ~st_coordinates(geometry_start)[,2],
+                   group = "leg_target",
                    label = ~paste(round(cum_distance, digits = 0), "km")) |>
         
         # -- zoom
@@ -119,9 +122,38 @@ planning_Server <- function(id, segments, title) {
     })
     
     
-    
-    
-    
+    # -- actionLink listener
+    observeEvent(input$create_leg, {
+      
+      # -- extract leg
+      leg <- segments |> filter(segment_id == split_input(input$create_leg)['value'])
+      
+      # -- store new leg
+      legs(bind_rows(legs(), leg))
+      
+      # -- declare icons
+      i_leg_finish <- makeAwesomeIcon(
+        icon = "flag",
+        library = "fa",
+        markerColor = "beige")
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        
+        # -- cleanup previous marker
+        removeMarker(layerId = "click") |>
+        clearGroup(group = "leg_target") |>
+        
+        # -- add leg finish
+        addAwesomeMarkers(data = leg,
+                          lng = ~st_coordinates(geometry_end)[,1],
+                          lat = ~st_coordinates(geometry_end)[,2],
+                          icon = i_leg_finish,
+                          group = "legs",
+                          label = ~paste(round(cum_distance, digits = 0), "km"))
+      
+      
+    }, ignoreInit = TRUE)
     
     
     # -- return
