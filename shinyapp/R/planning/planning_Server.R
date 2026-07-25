@@ -66,6 +66,9 @@ planning_Server <- function(id, segments, title) {
       # -- update map
       leafletProxy("map", session) |>
         
+        # -- clear group (to avoid multiple markers)
+        clearGroup("leg_target") |>
+        
         # -- add targets
         addAwesomeMarkers(data = targets,
                           lng = ~st_coordinates(geometry_start)[,1],
