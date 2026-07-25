@@ -19,7 +19,7 @@ popup_label <- function(segments){
                          paste0("<b>", label, "</b>")))
   
 }
- 
+
 
 #' Add Datetime
 #'
@@ -43,9 +43,27 @@ popup_datetime <- function(segments){
 }
 
 
-popup_leg <- function(segments){          
-           
-  segments |>
-    mutate(popup = case_when(label == "Start" ~paste(popup, "actionlink", sep = "<br/>"), .default = popup))
+#' Add Leg
+#'
+#' @param segments a segment table with popup column
+#'
+#' @returns a segment table with updated popup
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' popup_leg(popup_label(track_bounds(segments)))
+#' }
+
+popup_leg <- function(segments, ns){          
+  
+  helper <- function(x)
+    lapply(x, function(x)
+      paste(actionLink(inputId = ns(paste0("init_leg_", x)),
+                 label = "Add leg",
+                 onclick = paste0('Shiny.setInputValue(\"', ns("init_leg"), '\", this.id, {priority: \"event\"})'))))
     
+  segments |>
+    mutate(popup = replace_when(popup, label == "Start" ~paste(popup, helper(segment_id), sep = "<br/>")))
+  
 }
