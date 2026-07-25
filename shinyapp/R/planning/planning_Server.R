@@ -130,7 +130,11 @@ planning_Server <- function(id, segments, title) {
     observeEvent(input$create_leg, {
       
       # -- extract leg
-      leg <- segments |> filter(segment_id == split_input(input$create_leg)['value'])
+      leg <- segments |> 
+        filter(segment_id == split_input(input$create_leg)['value']) |>
+        mutate(label = "Leg")
+      
+      leg <- leg |> popup_label() |> popup_leg(ns = ns)
       
       # -- store new leg
       legs(bind_rows(legs(), leg))
@@ -153,6 +157,7 @@ planning_Server <- function(id, segments, title) {
                           lng = ~st_coordinates(geometry_end)[,1],
                           lat = ~st_coordinates(geometry_end)[,2],
                           icon = i_leg_finish,
+                          popup = ~popup,
                           group = "legs",
                           label = ~paste(round(cum_distance, digits = 0), "km"))
       
