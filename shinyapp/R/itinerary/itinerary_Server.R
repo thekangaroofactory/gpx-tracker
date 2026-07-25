@@ -56,7 +56,6 @@ itinerary_Server <- function(id, segments, filename) {
 
     # -- debug
     if(DEBUG){
-      debug_segments <<- segments
       debug_milestones <<- milestones
       debug_breaks <<- breaks
       debug_distances <<- distances

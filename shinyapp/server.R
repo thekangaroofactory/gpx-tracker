@@ -53,6 +53,9 @@ function(input, output, session) {
             pts_to_seg() |>
             seg_stats()
           
+          if(DEBUG)
+            debug_segments <<- track_segments
+          
           # -- add speed (only for finish ones)
           if(!planned_track)
             track_segments <- speed_stats(track_segments)
