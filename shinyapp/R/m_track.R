@@ -16,14 +16,6 @@
 m_track <- function(data, breaks = NULL){
   
   # -- declare icons
-  i_start <- makeAwesomeIcon(
-    icon = "circle-play",
-    library = "fa")
-  
-  i_finish <- makeAwesomeIcon(
-    icon = "flag-checkered",
-    library = "fa")
-  
   i_medium <- makeAwesomeIcon(
     icon = "circle-pause",
     library = "fa",
@@ -52,25 +44,7 @@ m_track <- function(data, breaks = NULL){
                  weight = 2, 
                  color = "black") %>%
     
-    # -- add starting point
-    addAwesomeMarkers(data = head(data, n = 1L),
-                      lng = ~st_coordinates(geometry_start)[,1],
-                      lat = ~st_coordinates(geometry_start)[,2],
-                      icon = i_start,
-                      popup = ~paste(sep = "<br/>",
-                                     "<b>Start</b>",
-                                     format(datetime_start,'%Y-%m-%d, %H:%M:%S'))) %>%
-    
-    # -- add finish point
-    addAwesomeMarkers(data = tail(data, n = 1L),
-                      lng = ~st_coordinates(geometry_end)[,1],
-                      lat = ~st_coordinates(geometry_end)[,2],
-                      icon = i_finish,
-                      popup = ~paste(sep = "<br/>",
-                                     "<b>Finish</b>",
-                                     format(datetime_start,'%Y-%m-%d, %H:%M:%S')))
-  
-  
+
   # -- add breaks layer
   if(is.data.frame(breaks)){
     
