@@ -30,6 +30,10 @@ planning_Server <- function(id, segments, title) {
     time_elapsed <- difftime(max(segments$datetime_end), min(segments$datetime_start), units = "hours")
     nb_day <- trunc(distance / c(LEG_DISTANCE_MAX, LEG_DISTANCE_MIN))
     
+    # -- base map
+    m_baseline <- m_track(segments)
+    
+    
     # --------------------------------------------------------------------------
     # Manage legs
     # --------------------------------------------------------------------------
@@ -82,8 +86,24 @@ planning_Server <- function(id, segments, title) {
     output$distance <- renderText(paste0(round(distance, digits = 1), "km"))
     
     
+    # --------------------------------------------------------------------------
+    # Map
+    # --------------------------------------------------------------------------
+    
     # -- track map
-    output$map <- renderLeaflet(m_track(segments))
+    output$map <- renderLeaflet(m_baseline)
+    
+    observeEvent(input$map_click, {
+      
+      str(input$map_click)
+      
+    })
+    
+    
+    
+    
+    
+    
     
     # -- return
     NULL
