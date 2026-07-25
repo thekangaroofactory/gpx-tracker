@@ -34,7 +34,7 @@ planning_Server <- function(id, segments, title) {
     m_baseline <- m_track(segments)
     
     # -- bounds
-    bounds <- segments |> track_bounds() |> popup_label() |> popup_leg()
+    bounds <- segments |> track_bounds() |> popup_label() |> popup_leg(ns = ns)
     m_baseline <- m_baseline |> m_start_finish(bounds)
     
     
@@ -46,10 +46,14 @@ planning_Server <- function(id, segments, title) {
     legs <- reactiveVal(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")))
     
     # -- button listener (to replace)
-    observeEvent(input$add_leg, {
+    observeEvent(input$init_leg, {
 
+      # -- extract input value
+      event <- split_input(input$init_leg)
+      
+      
       # -- compute targets
-      targets <- segments |> filter(segment_id %in% leg_targets(segments, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
+      targets <- segments |> filter(segment_id %in% leg_targets(segments, start = event['value'], min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
       bounds <- bounding_box(targets)
       
       # -- update map
