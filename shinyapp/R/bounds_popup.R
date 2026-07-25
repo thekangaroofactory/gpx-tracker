@@ -18,6 +18,6 @@ bounds_popup <- function(bounds){
     
     mutate(popup = paste(sep = "<br/>",
                    paste0("<b>", label, "</b>"),
-                   format(if(label == "Start") datetime_start else datetime_end,'%Y-%m-%d, %H:%M:%S')))
+                   format(case_when(label == "Start" ~ datetime_start, .default = datetime_end),'%Y-%m-%d, %H:%M:%S')))
   
 }
