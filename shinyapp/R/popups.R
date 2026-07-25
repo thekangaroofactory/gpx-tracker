@@ -64,6 +64,6 @@ popup_leg <- function(segments, ns){
                  onclick = paste0('Shiny.setInputValue(\"', ns("init_leg"), '\", this.id, {priority: \"event\"})'))))
     
   segments |>
-    mutate(popup = replace_when(popup, label == "Start" ~paste(popup, helper(segment_id), sep = "<br/>")))
+    mutate(popup = replace_when(popup, label %in% c("Start", "Leg") ~paste(popup, helper(segment_id), sep = "<br/>")))
   
 }
