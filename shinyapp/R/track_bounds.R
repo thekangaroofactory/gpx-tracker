@@ -14,6 +14,8 @@
 
 track_bounds <- function(segments){
 
-  segments |> filter(row_number() %in% c(1, n()))
+  segments |> 
+    filter(row_number() %in% c(1, n())) |>
+    mutate(label = c("Start", "Finish"))
   
 }
