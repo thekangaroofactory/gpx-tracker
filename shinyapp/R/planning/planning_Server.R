@@ -18,6 +18,9 @@ planning_Server <- function(id, segments, title) {
     # -- namespace
     ns <- session$ns
     
+    # -- objects
+    activity <- reactiveVal("default")
+    
     
     # --------------------------------------------------------------------------
     # Compute stats
@@ -60,7 +63,7 @@ planning_Server <- function(id, segments, title) {
     observeEvent(legs(),
       readr::write_csv(legs(), file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")),
       ignoreInit = TRUE)
-    
+
     # -- display leg targets
     observeEvent(input$leg_targets, {
 
@@ -86,6 +89,9 @@ planning_Server <- function(id, segments, title) {
                     lat1 = bounds[['lat1']],
                     lng2 = bounds[['lng2']],
                     lat2 = bounds[['lat2']])
+      
+      # -- activate leg mode
+      toggle_switch(id = "leg_mode", value = TRUE)
         
     })
     
@@ -179,29 +185,47 @@ planning_Server <- function(id, segments, title) {
     # -- the map
     output$map <- renderLeaflet(map_track)
     
+    # -- activate leg mode (activity)
+    observeEvent(input$leg_mode, 
+                 
+                 if(input$leg_mode) 
+                   activity("leg") 
+                 else {
+                   # -- update map
+                   # (in case a click or target markers are displayed)
+                   leafletProxy("map", session) |>
+                     removeMarker(layerId = "click") |>
+                     clearGroup(group = "leg_target")
+                   activity("default")})
+    
     # -- map click listener
     observeEvent(input$map_click, {
       
-      # -- get nearest segment
-      idx <- nearest_index(segments, lng = input$map_click$lng, lat = input$map_click$lat)
-      x <- segments |> 
-        filter(segment_id == idx)|>
-        mutate(lng = lng_end,
-               lat = lat_end,
-               elevation = elevation_end,
-               type = "click",
-               label = paste(round(cum_distance, digits = 0), "km")) |>
-        select(segment_id, lng, lat, elevation, cum_distance, type, label) |>
-        mk_popup(info = c("title", "add_leg"), ns = ns)
-      
-      # -- update map
-      leafletProxy("map", session) |>
-      
-        # -- cleanup previous marker
-        removeMarker(layerId = "click") |>
-      
-        # -- add targets
-        m_marker(x, layerId = "click")
+      # -- leg mode
+      if(activity() == "leg"){
+        
+        # -- get nearest segment
+        idx <- nearest_index(segments, lng = input$map_click$lng, lat = input$map_click$lat)
+        x <- segments |> 
+          filter(segment_id == idx)|>
+          mutate(lng = lng_end,
+                 lat = lat_end,
+                 elevation = elevation_end,
+                 type = "click",
+                 label = paste(round(cum_distance, digits = 0), "km")) |>
+          select(segment_id, lng, lat, elevation, cum_distance, type, label) |>
+          mk_popup(info = c("title", "add_leg"), ns = ns)
+        
+        # -- update map
+        leafletProxy("map", session) |>
+          
+          # -- cleanup previous marker
+          removeMarker(layerId = "click") |>
+          
+          # -- add targets
+          m_marker(x, layerId = "click")
+        
+      }
       
     })
     

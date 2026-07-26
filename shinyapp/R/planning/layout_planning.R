@@ -24,7 +24,8 @@ layout_planning <- function(id, title = "Planning"){
       p(textOutput(ns("nb_day"), inline = T), "itinerary"),
       p("Distance:", textOutput(ns("distance"), inline = T)),
       p(textOutput(ns("nb_points"), inline = T), "GPS points"),
-      p("Expected time:", textOutput(ns("time_expected"), inline = T))),
+      p("Expected time:", textOutput(ns("time_expected"), inline = T)),
+      input_switch(id = ns("leg_mode"), label = "leg", value = FALSE)),
     
     # -- main content
     leafletOutput(ns("map"))
