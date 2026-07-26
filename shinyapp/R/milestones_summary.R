@@ -21,8 +21,10 @@ milestones_summary <- function(track, breaks){
   
   # -- get address info
   # zoom = 10 for city level API output
-  milestones$city <- unlist(lapply(milestones$geometry_start, function(geometry){
+  milestones$city <- unlist(lapply(milestones$lng_start, function(geometry){
   
+    warning("*** rework since we cant loop on geometry anymore (apply over row number)")
+    
     # -- call API
     # osm_data <- reverse_geocoding(lng = st_coordinates(geometry)[, 1], 
     #                               lat = st_coordinates(geometry)[, 2],

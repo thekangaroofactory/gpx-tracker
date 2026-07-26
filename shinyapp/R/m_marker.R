@@ -30,8 +30,8 @@ m_marker <- function(map, markers, layerId = NULL, group = NULL){
     
     # -- add starting point
     addAwesomeMarkers(data = markers,
-                      lng = ~st_coordinates(geometry)[,1],
-                      lat = ~st_coordinates(geometry)[,2],
+                      lng = ~lng,
+                      lat = ~lat,
                       layerId = layerId,
                       group = group,
                       icon = ~makeAwesomeIcon(icon = i_map[match(markers$type, i_map$type), 'name'], 

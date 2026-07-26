@@ -26,8 +26,8 @@ m_track <- function(data){
     
     # -- add track layer
     # need to manually add the latest end point since it's based on segments
-    addPolylines(lng = ~c(st_coordinates(geometry_start)[,1], st_coordinates(tail(geometry_end, 1))[,1]),
-                 lat = ~c(st_coordinates(geometry_start)[,2], st_coordinates(tail(geometry_end, 1))[,2]), 
+    addPolylines(lng = ~c(lng_start, tail(lng_end, 1)),
+                 lat = ~c(lat_start, tail(lat_end, 1)), 
                  weight = 2, 
                  color = "black")
     

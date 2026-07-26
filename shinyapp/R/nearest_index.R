@@ -9,7 +9,7 @@
 #' @details
 #' Computation is based on the segment end
 #'
-#' @returns an integer, index of the nearest segment
+#' @returns an integer, index of the nearest segment (end)
 #' @export
 #'
 #' @examples
@@ -22,7 +22,10 @@ nearest_index <- function(segments, lng, lat){
   # -- convert lng lat into sf object
   ref_point <- st_sfc(st_point(c(lng, lat)), crs = 4326)
   
+  df_end <- st_as_sf(segments[c("lng_end", "lat_end")], coords = c("lng_end", "lat_end"), crs = 4326)
+  
+  
   # -- return nearest index
-  st_nearest_feature(ref_point, segments$geometry_end)
+  st_nearest_feature(ref_point, df_end)
   
 }

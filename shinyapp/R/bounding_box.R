@@ -4,9 +4,9 @@ bounding_box <- function(segments){
   
   # -- return
   c(
-    lng1 = min(st_coordinates(segments$geometry)[,1]),
-    lat1 = min(st_coordinates(segments$geometry)[,2]),
-    lng2 = max(st_coordinates(segments$geometry)[,1]),
-    lat2 = max(st_coordinates(segments$geometry)[,2]))
+    lng1 = min(segments$lng),
+    lat1 = min(segments$lat),
+    lng2 = max(segments$lng),
+    lat2 = max(segments$lat))
   
 }

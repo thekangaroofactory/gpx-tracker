@@ -30,10 +30,11 @@ leg_targets <- function(segments, start = 1, min = 70, max = 80, step = 5){
   # -- return
   segments |> 
     filter(segment_id %in% idx) |>
-    select(segment_id, geometry_end, datetime_end, elevation_end, cum_distance) |>
+    select(segment_id, lng_end, lat_end, datetime_end, elevation_end, cum_distance) |>
     mutate(type = "target",
            distance = cum_distance - ref_dist) |>
-    rename(geometry = geometry_end,
+    rename(lng = lng_end,
+           lat = lat_end,
            datetime = datetime_end,
            elevation = elevation_end)
   

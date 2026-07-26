@@ -37,8 +37,8 @@ m_break <- function(map, breaks = NULL){
   
   # -- short
   map <- map %>% addCircleMarkers(data = breaks |> filter(type == "short"),
-                                  lng = ~st_coordinates(geometry_end)[,1],
-                                  lat = ~st_coordinates(geometry_end)[,2],
+                                  lng = ~lng_end,
+                                  lat = ~lat_end,
                                   radius = ~time/1000,
                                   popup = ~paste(sep = "<br/>",
                                                  "<b>Break (short)</b>",
@@ -46,8 +46,8 @@ m_break <- function(map, breaks = NULL){
   
   # -- medium
   map <- map %>% addCircleMarkers(data = breaks |> filter(type == "medium"),
-                                  lng = ~st_coordinates(geometry_end)[,1],
-                                  lat = ~st_coordinates(geometry_end)[,2],
+                                  lng = ~lng_end,
+                                  lat = ~lat_end,
                                   color = "orange",
                                   radius = ~time/1000,
                                   popup = ~paste(sep = "<br/>",
@@ -57,8 +57,8 @@ m_break <- function(map, breaks = NULL){
   # -- long
   if("long" %in% breaks$type)
     map <- map %>% addAwesomeMarkers(data = breaks |> filter(type == "long"),
-                                     lng = ~st_coordinates(geometry_end)[,1],
-                                     lat = ~st_coordinates(geometry_end)[,2],
+                                     lng = ~lng_end,
+                                     lat = ~lat_end,
                                      icon = i_long,
                                      popup = ~paste(sep = "<br/>",
                                                     "<b>Break (long)</b>",
@@ -67,8 +67,8 @@ m_break <- function(map, breaks = NULL){
   # -- overnight
   if("overnight" %in% breaks$type)
     map <- map %>% addAwesomeMarkers(data = breaks |> filter(type == "overnight"),
-                                     lng = ~st_coordinates(geometry_end)[,1],
-                                     lat = ~st_coordinates(geometry_end)[,2],
+                                     lng = ~lng_end,
+                                     lat = ~lat_end,
                                      icon = i_overnight,
                                      popup = ~paste(sep = "<br/>",
                                                     "<b>Break (overnight)</b>",

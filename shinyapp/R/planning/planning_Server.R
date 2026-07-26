@@ -156,11 +156,12 @@ planning_Server <- function(id, segments, title) {
       idx <- nearest_index(segments, lng = input$map_click$lng, lat = input$map_click$lat)
       x <- segments |> 
         filter(segment_id == idx)|>
-        mutate(geometry = geometry_end,
+        mutate(lng = lng_end,
+               lat = lat_end,
                elevation = elevation_end,
                type = "click",
                label = paste(round(cum_distance, digits = 0), "km")) |>
-        select(segment_id, geometry, elevation, cum_distance, type, label) |>
+        select(segment_id, lng, lat, elevation, cum_distance, type, label) |>
         mk_popup(info = c("title", "add_leg"), ns = ns)
       
       # -- update map
