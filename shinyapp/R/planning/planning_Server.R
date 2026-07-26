@@ -38,38 +38,25 @@ planning_Server <- function(id, segments, title) {
     # -- read leg file
     legs <- reactiveVal(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")))
     
-    # -- button listener (to replace)
-    observeEvent(input$init_leg, {
+    # -- display leg targets
+    observeEvent(input$leg_targets, {
 
       # -- extract input value (reference segment id)
-      ref_id <- split_input(input$init_leg)['value']
-      ref_distance <- if(ref_id == 1) 0 else segments |> filter(segment_id == ref_id) |> pull(cum_distance)
+      ref_id <- split_input(input$leg_targets)['value']
       
       # -- compute targets
-      targets <- segments |> filter(segment_id %in% leg_targets(segments, start = ref_id, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP))
-      targets <- targets |> popup_target(ns = ns)
+      targets <- segments |> leg_targets(start = ref_id, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP)
+      targets <- targets |> mk_popup(c("title", "clear_targets"), ns = ns) |> mutate(label = paste(round(distance, digits = 0), "km"))
       bounds <- bounding_box(targets)
-      
-      # -- icon
-      i_leg_target <- makeAwesomeIcon(
-        icon = "location-crosshairs",
-        library = "fa",
-        markerColor = "lightgray")
-      
+
       # -- update map
       leafletProxy("map", session) |>
         
         # -- clear group (to avoid multiple markers)
         clearGroup("leg_target") |>
-        
-        # -- add targets
-        addAwesomeMarkers(data = targets,
-                          lng = ~st_coordinates(geometry_end)[,1],
-                          lat = ~st_coordinates(geometry_end)[,2],
-                          group = "leg_target",
-                          icon = i_leg_target,
-                          label = ~paste(round(cum_distance - ref_distance, digits = 0), "km"),
-                          popup = ~popup) |>
+
+        # -- add markers
+        m_marker(markers = targets, group = "leg_target") |>
         
         # -- zoom
         flyToBounds(lng1 = bounds[['lng1']],
@@ -78,6 +65,51 @@ planning_Server <- function(id, segments, title) {
                     lat2 = bounds[['lat2']])
         
     })
+    
+    
+    # -- create leg
+    observeEvent(input$create_leg, {
+      
+      # -- extract leg
+      leg <- segments |> 
+        leg_targets(start = split_input(input$create_leg)['value'], min = 0, max = 0) |> 
+        mk_popup(info = c("title", "show_targets"), ns = ns) |>
+        mutate(type = "leg",
+               label = paste(round(cum_distance, digits = 0), "km"))
+      
+      # -- store new leg
+      legs(bind_rows(legs(), leg))
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        
+        # -- cleanup previous marker
+        removeMarker(layerId = "click") |>
+        clearGroup(group = "leg_target") |>
+      
+        # -- add markers
+        m_marker(leg, group = "legs")
+      
+      
+    }, ignoreInit = TRUE)
+    
+    
+    # -- remove leg
+    observeEvent(input$drop_leg, {
+      
+      # -- extract input value (reference segment id)
+      leg_id <- split_input(input$drop_leg)['value']
+      
+      # -- drop from leg table
+      # legs()
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        
+        # -- cleanup previous marker
+        removeMarker(layerId = "foo")
+      
+    }, ignoreInit = TRUE)
     
     
     # --------------------------------------------------------------------------
@@ -122,7 +154,14 @@ planning_Server <- function(id, segments, title) {
       
       # -- get nearest segment
       idx <- nearest_index(segments, lng = input$map_click$lng, lat = input$map_click$lat)
-      x <- segments |> filter(segment_id == idx)
+      x <- segments |> 
+        filter(segment_id == idx)|>
+        mutate(geometry = geometry_end,
+               elevation = elevation_end,
+               type = "click",
+               label = paste(round(cum_distance, digits = 0), "km")) |>
+        select(segment_id, geometry, elevation, cum_distance, type, label) |>
+        mk_popup(info = c("title", "add_leg"), ns = ns)
       
       # -- update map
       leafletProxy("map", session) |>
@@ -131,55 +170,9 @@ planning_Server <- function(id, segments, title) {
         removeMarker(layerId = "click") |>
       
         # -- add targets
-        addMarkers(data = x,
-                   lng = ~st_coordinates(geometry_end)[,1],
-                   lat = ~st_coordinates(geometry_end)[,2],
-                   layerId = "click",
-                   popup = paste(actionLink(inputId = ns(paste0("add_leg_", idx)), 
-                                      label = "Add leg", 
-                                      onclick = paste0('Shiny.setInputValue(\"', ns("create_leg"), '\", this.id, {priority: \"event\"})'))),
-                   label = ~paste(round(cum_distance, digits = 0), "km"))
+        m_marker(x, layerId = "click")
       
     })
-    
-    
-    # -- actionLink listener
-    observeEvent(input$create_leg, {
-      
-      # -- extract leg
-      leg <- segments |> 
-        filter(segment_id == split_input(input$create_leg)['value']) |>
-        mutate(label = "Leg")
-      
-      leg <- leg |> popup_label() |> popup_leg(ns = ns)
-      
-      # -- store new leg
-      legs(bind_rows(legs(), leg))
-      
-      # -- declare icons
-      i_leg_finish <- makeAwesomeIcon(
-        icon = "flag",
-        library = "fa",
-        markerColor = "beige")
-      
-      # -- update map
-      leafletProxy("map", session) |>
-        
-        # -- cleanup previous marker
-        removeMarker(layerId = "click") |>
-        clearGroup(group = "leg_target") |>
-        
-        # -- add leg finish
-        addAwesomeMarkers(data = leg,
-                          lng = ~st_coordinates(geometry_end)[,1],
-                          lat = ~st_coordinates(geometry_end)[,2],
-                          icon = i_leg_finish,
-                          popup = ~popup,
-                          group = "legs",
-                          label = ~paste(round(cum_distance, digits = 0), "km"))
-      
-      
-    }, ignoreInit = TRUE)
     
     
     # -- clear group
