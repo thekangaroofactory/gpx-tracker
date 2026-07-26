@@ -51,7 +51,7 @@ planning_Server <- function(id, segments, title) {
     # -- add popup & label
     if(!is.null(legs_init)){
       legs_init <- legs_init |> 
-        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
+        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance"), ns = ns) |>
         mutate(type = "leg",
                label = paste(round(cum_distance, digits = 0), "km"))}
     
@@ -103,7 +103,7 @@ planning_Server <- function(id, segments, title) {
       
       # -- add popup & label
       leg <- leg |>
-        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
+        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance"), ns = ns) |>
         mutate(type = "leg",
                label = paste(round(cum_distance, digits = 0), "km"))
    
@@ -167,8 +167,8 @@ planning_Server <- function(id, segments, title) {
     map_track <- m_track(segments)
     
     # -- add track bounds
-    start <- segments |> bound_start() |> mk_popup(info = c("title", "show_targets"), ns = ns)
-    finish <- segments |> bound_finish() |> mk_popup(info = c("title"))
+    start <- segments |> bound_start() |> mk_popup(info = c("title", "show_targets", "distance"), ns = ns)
+    finish <- segments |> bound_finish() |> mk_popup(info = c("title", "distance"))
     map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
     
     # -- add legs (if any)
