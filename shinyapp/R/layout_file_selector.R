@@ -16,6 +16,9 @@ layout_file_selector <- function(files){
   
   # -- return
   layout_column_wrap(
+    width = "250px",
+    fixed_width = TRUE,
+    
     !!!lapply(files, function(x) {
       
       # -- return
