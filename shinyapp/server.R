@@ -66,10 +66,13 @@ function(input, output, session) {
             value = 10,
             message = "Launch track module")
           
+          # -- get track title
+          title <- track_title(file.path(Sys.getenv("DATA_HOME"), input$open_track))
+          
           obs <- if(planned_track)
-            planning_Server(id = uuid, segments = track_segments, title = basename(input$open_track))
+            planning_Server(id = uuid, segments = track_segments, title = title)
           else
-            itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
+            itinerary_Server(id = uuid, segments = track_segments, title = title)
           cache_obs(obs)
           
           # -- build ui
@@ -78,9 +81,9 @@ function(input, output, session) {
             message = "Build UI")
           
           content <- if(planned_track)
-            layout_planning(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", basename(input$open_track)))
+            layout_planning(id = uuid, title = title)
           else
-            layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
+            layout_itinerary(id = uuid, title = title)
           
           # -- insert tab
           setProgress(

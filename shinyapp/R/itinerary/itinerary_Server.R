@@ -4,7 +4,7 @@
 # Server logic
 # ------------------------------------------------------------------------------
 
-itinerary_Server <- function(id, segments, filename) {
+itinerary_Server <- function(id, segments, title) {
   moduleServer(id, function(input, output, session) {
     
     # --------------------------------------------------------------------------
@@ -88,7 +88,7 @@ itinerary_Server <- function(id, segments, filename) {
       message = "Build map & plots")
     
     # -- title
-    output$title <- renderText(tail(unlist(strsplit(unlist(strsplit(filename, split = ".", fixed = T))[1], "_")), 1))
+    output$title <- renderText(title)
     
     # -- GPS points
     output$nb_points <- renderText(nrow(segments) + 1)

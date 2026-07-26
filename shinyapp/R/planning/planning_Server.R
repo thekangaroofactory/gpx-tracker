@@ -150,7 +150,7 @@ planning_Server <- function(id, segments, title) {
     warning("Check comment factoriser ça avec l'autre serveur!")
     
     # -- title
-    output$title <- renderText(tail(unlist(strsplit(unlist(strsplit(title, split = ".", fixed = T))[1], "_")), 1))
+    output$title <- renderText(title)
     
     # -- GPS points
     output$nb_points <- renderText(nrow(segments) + 1)
