@@ -1,6 +1,6 @@
 
 
-mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "clear_targets"), ns = NULL){
+mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "clear_targets", "add_leg", "remove_leg"), ns = NULL){
   
   # -- build popup
   popup <- paste0("<b>", ktools::toupperfirst(markers$type), "</b>")
@@ -66,7 +66,25 @@ mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "cle
     
   }
   
-
+  
+  # ----------------------------------------------------------------------------
+  # action: remove (leg)
+  # ----------------------------------------------------------------------------
+  
+  if("remove_leg" %in% info){
+    
+    # -- actionLink
+    helper <- function(x)
+      lapply(x, function(x)
+        paste(actionLink(inputId = ns(paste0("remove_leg_", x)),
+                         label = "Remove",
+                         onclick = paste0('Shiny.setInputValue(\"', ns("drop_leg"), '\", this.id, {priority: \"event\"})'))))
+    
+    popup <- paste(popup, paste(helper(markers$segment_id), "leg."), sep = "<br/>")
+    
+  }
+  
+  
   # ----------------------------------------------------------------------------
   # update markers & return
   # ----------------------------------------------------------------------------

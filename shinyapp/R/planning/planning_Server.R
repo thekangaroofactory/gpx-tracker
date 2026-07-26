@@ -73,7 +73,7 @@ planning_Server <- function(id, segments, title) {
       # -- extract leg
       leg <- segments |> 
         leg_targets(start = split_input(input$create_leg)['value'], min = 0, max = 0) |> 
-        mk_popup(info = c("title", "show_targets"), ns = ns) |>
+        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
         mutate(type = "leg",
                label = paste(round(cum_distance, digits = 0), "km"))
       
@@ -88,7 +88,7 @@ planning_Server <- function(id, segments, title) {
         clearGroup(group = "leg_target") |>
       
         # -- add markers
-        m_marker(leg, group = "legs")
+        m_marker(leg, layerId = paste0("leg_", leg$segment_id), group = "legs")
       
       
     }, ignoreInit = TRUE)
@@ -107,7 +107,7 @@ planning_Server <- function(id, segments, title) {
       leafletProxy("map", session) |>
         
         # -- cleanup previous marker
-        removeMarker(layerId = "foo")
+        removeMarker(layerId = paste0("leg_", leg_id))
       
     }, ignoreInit = TRUE)
     
