@@ -109,9 +109,10 @@ itinerary_Server <- function(id, segments, filename) {
     # -- milestones
     output$timeline <- renderUI(timeline(milestones))
     
-    # -- track map
-    # saved as an object for reuse purpose
-    map_track <- m_track(segments, breaks)
+    # -- map track & breaks
+    map_track <- segments |>
+      m_track() |>
+      m_break(breaks)
     
     # -- add track bounds
     bounds <- segments |> track_bounds() |> popup_label() |> popup_datetime()
