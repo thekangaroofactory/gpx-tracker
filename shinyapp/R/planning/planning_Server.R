@@ -34,9 +34,32 @@ planning_Server <- function(id, segments, title) {
     # --------------------------------------------------------------------------
     # Manage legs
     # --------------------------------------------------------------------------
-
+    
     # -- read leg file
-    legs <- reactiveVal(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")))
+    legs_init <- as.data.frame(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv"),
+                                               col_types = readr::cols(segment_id = "i",
+                                                                       lng = "d",
+                                                                       lat = "d",
+                                                                       datetime = "T",
+                                                                       elevation = "d",
+                                                                       cum_distance = "d",
+                                                                       type = "c",
+                                                                       distance = "d")))
+    if(nrow(legs_init) == 0) legs_init <- NULL
+    legs <- reactiveVal(legs_init)
+    
+    # -- add popup & label
+    if(!is.null(legs_init)){
+      legs_init <- legs_init |> 
+        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
+        mutate(type = "leg",
+               label = paste(round(cum_distance, digits = 0), "km"))}
+    
+    # -- persistence
+    # popup & label are not saved
+    observeEvent(legs(),
+      readr::write_csv(legs(), file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")),
+      ignoreInit = TRUE)
     
     # -- display leg targets
     observeEvent(input$leg_targets, {
@@ -73,13 +96,17 @@ planning_Server <- function(id, segments, title) {
       # -- extract leg
       leg <- segments |> 
         leg_targets(start = split_input(input$create_leg)['value'], min = 0, max = 0) |> 
-        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
-        mutate(type = "leg",
-               label = paste(round(cum_distance, digits = 0), "km"))
-      
+        mutate(type = "leg")
+        
       # -- store new leg
       legs(bind_rows(legs(), leg))
       
+      # -- add popup & label
+      leg <- leg |>
+        mk_popup(info = c("title", "show_targets", "remove_leg"), ns = ns) |>
+        mutate(type = "leg",
+               label = paste(round(cum_distance, digits = 0), "km"))
+   
       # -- update map
       leafletProxy("map", session) |>
         
@@ -101,12 +128,10 @@ planning_Server <- function(id, segments, title) {
       leg_id <- split_input(input$drop_leg)['value']
       
       # -- drop from leg table
-      # legs()
+      legs(legs() |> filter(segment_id != leg_id))
       
-      # -- update map
+      # -- update map (cleanup leg marker)
       leafletProxy("map", session) |>
-        
-        # -- cleanup previous marker
         removeMarker(layerId = paste0("leg_", leg_id))
       
     }, ignoreInit = TRUE)
@@ -145,6 +170,11 @@ planning_Server <- function(id, segments, title) {
     start <- segments |> bound_start() |> mk_popup(info = c("title", "show_targets"), ns = ns)
     finish <- segments |> bound_finish() |> mk_popup(info = c("title"))
     map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
+    
+    # -- add legs (if any)
+    # need to rebuilt popup & label
+    if(!is.null(legs_init))
+      map_track <- map_track |> m_marker(legs_init, layerId = paste0("leg_", legs_init$segment_id), group = "legs")
     
     # -- the map
     output$map <- renderLeaflet(map_track)
