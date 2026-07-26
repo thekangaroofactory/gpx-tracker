@@ -73,7 +73,7 @@ planning_Server <- function(id, segments, title) {
       # -- compute targets
       targets <- segments |> leg_targets(start = ref_id, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP)
       targets <- targets |> mk_popup(c("title", "clear_targets"), ns = ns) |> mutate(label = paste(round(distance, digits = 0), "km"))
-      bounds <- bounding_box(targets)
+      bounds <- bounding_box(points = targets)
 
       # -- update map
       leafletProxy("map", session) |>
@@ -85,10 +85,7 @@ planning_Server <- function(id, segments, title) {
         m_marker(markers = targets, group = "leg_target") |>
         
         # -- zoom
-        flyToBounds(lng1 = bounds[['lng1']],
-                    lat1 = bounds[['lat1']],
-                    lng2 = bounds[['lng2']],
-                    lat2 = bounds[['lat2']])
+        m_fly_bounds(bounds)
       
       # -- activate leg mode
       toggle_switch(id = "leg_mode", value = TRUE)
@@ -169,6 +166,9 @@ planning_Server <- function(id, segments, title) {
     # Map
     # --------------------------------------------------------------------------
     
+    # -- track bounding box
+    track_bounds <- bounding_box(segments = segments)
+    
     # -- baseline map: tile + track
     map_track <- m_track(segments)
     
@@ -229,6 +229,14 @@ planning_Server <- function(id, segments, title) {
       
     })
     
+    # -- zoom (fit track)
+    observeEvent(input$map_fit, {
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        m_fly_bounds(bounds = track_bounds)
+      
+    }, ignoreInit = TRUE)
     
     # -- clear group
     observeEvent(input$clear_group, {

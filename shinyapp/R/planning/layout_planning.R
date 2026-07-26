@@ -25,7 +25,8 @@ layout_planning <- function(id, title = "Planning"){
       p("Distance:", textOutput(ns("distance"), inline = T)),
       p(textOutput(ns("nb_points"), inline = T), "GPS points"),
       p("Expected time:", textOutput(ns("time_expected"), inline = T)),
-      input_switch(id = ns("leg_mode"), label = "leg", value = FALSE)),
+      input_switch(id = ns("leg_mode"), label = "leg", value = FALSE),
+      actionLink(inputId = ns("map_fit"), label = "", icon = icon("down-left-and-up-right-to-center"), onclick = paste0('Shiny.setInputValue(\"', ns("map_fit"), '\", this.id, {priority: \"event\"})'))),
     
     # -- main content
     leafletOutput(ns("map"))
