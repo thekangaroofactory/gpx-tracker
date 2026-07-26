@@ -29,14 +29,7 @@ planning_Server <- function(id, segments, title) {
     # -- compute times
     time_elapsed <- difftime(max(segments$datetime_end), min(segments$datetime_start), units = "hours")
     nb_day <- trunc(distance / c(LEG_DISTANCE_MAX, LEG_DISTANCE_MIN))
-    
-    # -- base map
-    m_baseline <- m_track(segments)
-    
-    # -- bounds
-    bounds <- segments |> track_bounds() |> popup_label() |> popup_leg(ns = ns)
-    m_baseline <- m_baseline |> m_start_finish(bounds)
-    
+
     
     # --------------------------------------------------------------------------
     # Manage legs
@@ -113,8 +106,16 @@ planning_Server <- function(id, segments, title) {
     # Map
     # --------------------------------------------------------------------------
     
+    # -- baseline map: tile + track
+    map_track <- m_track(segments)
+    
+    # -- add track bounds
+    start <- segments |> bound_start() |> mk_popup(info = c("title", "show_targets"), ns = ns)
+    finish <- segments |> bound_finish() |> mk_popup(info = c("title"))
+    map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
+    
     # -- the map
-    output$map <- renderLeaflet(m_baseline)
+    output$map <- renderLeaflet(map_track)
     
     # -- map click listener
     observeEvent(input$map_click, {
