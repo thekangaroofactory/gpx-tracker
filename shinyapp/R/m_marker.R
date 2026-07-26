@@ -18,6 +18,11 @@
 
 m_marker <- function(map, markers, layerId = NULL, group = NULL){
   
+  # -- check param
+  # ex. no anomaly
+  if(nrow(markers) == 0)
+    return(map)
+  
   # -- get icon mapping
   i_map <- icon_mapping()
   

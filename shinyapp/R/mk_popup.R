@@ -1,6 +1,6 @@
 
 
-mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "clear_targets", "add_leg", "remove_leg", "distance", "cum_distance"), ns = NULL){
+mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "clear_targets", "add_leg", "remove_leg", "distance", "distance_m", "cum_distance", "speed"), ns = NULL){
   
   # -- build popup
   popup <- paste0("<b>", ktools::toupperfirst(markers$type), "</b>")
@@ -20,12 +20,24 @@ mk_popup <- function(markers, info = c("title", "datetime", "show_targets", "cle
   if("distance" %in% info)
     popup <- paste(sep = "<br/>", popup, paste0(round(markers$distance, digits = 0), "km"))
   
+  if("distance_m" %in% info)
+    popup <- paste(sep = "<br/>", popup, paste0(round(markers$distance, digits = 0), "m"))
+  
+  
   # ----------------------------------------------------------------------------
-  # datetime
+  # cum_distance
   # ----------------------------------------------------------------------------
   
   if("cum_distance" %in% info)
     popup <- paste(sep = "<br/>", popup, paste0(round(markers$cum_distance, digits = 0), "km"))
+  
+  
+  # ----------------------------------------------------------------------------
+  # speed
+  # ----------------------------------------------------------------------------
+  
+  if("speed" %in% info)
+    popup <- paste(sep = "<br/>", popup, paste0(round(markers$speed, digits = 1), "km/h"))
   
   
   # ----------------------------------------------------------------------------
