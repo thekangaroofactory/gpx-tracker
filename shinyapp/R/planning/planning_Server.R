@@ -46,7 +46,7 @@ planning_Server <- function(id, segments, title) {
     # -- add popup & label
     if(!is.null(legs_init)){
       legs_init <- legs_init |> 
-        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance"), ns = ns) |>
+        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance", "distance"), ns = ns) |>
         mutate(type = "leg",
                label = "Leg")}
     
@@ -88,31 +88,44 @@ planning_Server <- function(id, segments, title) {
     # -- create leg
     observeEvent(input$create_leg, {
       
-      # -- extract leg
+      # -- extract segment id
+      leg_id <- split_input(input$create_leg)['value']
+      
+      # -- extract leg point
       leg <- segments |> 
-        leg_targets(start = split_input(input$create_leg)['value'], min = 0, max = 0) |> 
+        leg_targets(start = leg_id, min = 0, max = 0) |> 
         mutate(track_id = id,
                type = "leg")
         
-      # -- store new leg
-      legs(bind_rows(legs(), leg))
+      # -- update distance
+      # distance out of leg_targets() will be 0
+      leg_table <- bind_rows(legs(), leg) |>
+        arrange(segment_id) |>
+        mutate(distance = cum_distance - lag(cum_distance)) |>
+        mutate(distance = replace_when(distance, is.na(distance) ~ cum_distance))
+      
+      # -- store updated table
+      legs(leg_table)
       
       # -- add popup & label
-      leg <- leg |>
-        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance"), ns = ns) |>
+      # take legs from the table to get updated distance
+      # new leg + next leg (since distance has changed for this point)
+      leg <- leg_table |>
+        filter(segment_id == leg_id |
+               lag(segment_id) == leg_id) |>
+        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance", "distance"), ns = ns) |>
         mutate(type = "leg",
-               label = paste(round(cum_distance, digits = 0), "km"))
-   
+               label = "Leg")
+      
       # -- update map
       leafletProxy("map", session) |>
         
-        # -- cleanup previous marker
-        removeMarker(layerId = "click") |>
+        # -- cleanup targets & click
         clearGroup(group = "leg_target") |>
+        removeMarker(layerId = c("click", paste0("leg_", tail(leg$segment_id, n = 1L))))|>
       
-        # -- add markers
+        # -- add markers (new + next legs)
         m_marker(leg, layerId = paste0("leg_", leg$segment_id), group = "legs")
-      
       
     }, ignoreInit = TRUE)
     
