@@ -67,6 +67,15 @@ popup_anomaly_distance <- function(markers){
   
 }
 
+popup_break <- function(markers){
+  
+  x <- popup_title(markers$type) |>
+    popup_append(popup_time(markers$time))
+  markers |> popup(x)
+  
+}
+
+
 # ------------------------------------------------------------------------------
 # base functions
 # ------------------------------------------------------------------------------
@@ -82,6 +91,9 @@ popup_title <- function(x){
 
 popup_datetime <- function(x){
   format(x, '%Y-%m-%d, %H:%M:%S')}
+
+popup_time <- function(x){
+  ifelse(x < 3600, paste0(floor(x / 60), "min"), paste0(floor(x / 3600), "h", floor((x - floor(x / 3600) * 3600) / 60), "min"))}
 
 popup_distance <- function(x, digits = 0, unit = "km"){
   paste0(round(x, digits = digits), unit)}
