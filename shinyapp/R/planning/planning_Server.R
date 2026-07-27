@@ -46,7 +46,7 @@ planning_Server <- function(id, segments, title) {
     # -- add popup & label
     if(!is.null(legs_init)){
       legs_init <- legs_init |> 
-        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance", "distance"), ns = ns) |>
+        popup_leg(ns) |>
         mutate(type = "leg",
                label = "Leg")}
     
@@ -64,7 +64,7 @@ planning_Server <- function(id, segments, title) {
       
       # -- compute targets
       targets <- segments |> leg_targets(start = ref_id, min = LEG_DISTANCE_MIN, max = LEG_DISTANCE_MAX, step = LEG_DISTANCE_STEP)
-      targets <- targets |> mk_popup(c("title", "clear_targets"), ns = ns) |> mutate(label = paste(round(distance, digits = 0), "km"))
+      targets <- targets |> popup_target(ns) |> mutate(label = paste(round(distance, digits = 0), "km"))
       bounds <- bounding_box(points = targets)
 
       # -- update map
@@ -113,7 +113,7 @@ planning_Server <- function(id, segments, title) {
       leg <- leg_table |>
         filter(segment_id == leg_id |
                lag(segment_id) == leg_id) |>
-        mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance", "distance"), ns = ns) |>
+        popup_leg(ns) |>
         mutate(type = "leg",
                label = "Leg")
       
@@ -179,8 +179,8 @@ planning_Server <- function(id, segments, title) {
     map_track <- m_track(segments)
     
     # -- add track bounds
-    start <- segments |> bound_start() |> mk_popup(info = c("title", "show_targets", "distance"), ns = ns)
-    finish <- segments |> bound_finish() |> mk_popup(info = c("title", "distance"))
+    start <- segments |> bound_start() |> popup_start(ns, plan = TRUE)
+    finish <- segments |> bound_finish() |> popup_finish(plan = TRUE)
     map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
     
     # -- add legs (if any)
@@ -220,7 +220,7 @@ planning_Server <- function(id, segments, title) {
                  type = "click",
                  label = paste(round(cum_distance, digits = 0), "km")) |>
           select(segment_id, lng, lat, elevation, cum_distance, type, label) |>
-          mk_popup(info = c("title", "add_leg"), ns = ns)
+          popup_leg_click(ns = ns)
         
         # -- update map
         leafletProxy("map", session) |>

@@ -105,8 +105,8 @@ itinerary_Server <- function(id, segments, title) {
       m_break(breaks)
     
     # -- add track bounds
-    start <- segments |> bound_start() |> mk_popup(info = c("title", "datetime"))
-    finish <- segments |> bound_finish() |> mk_popup(info = c("title", "datetime"))
+    start <- segments |> bound_start() |> popup_start(ns)
+    finish <- segments |> bound_finish() |> popup_finish()
     map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
     
     # -- add anomaly layer

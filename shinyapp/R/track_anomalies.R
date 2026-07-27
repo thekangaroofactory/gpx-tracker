@@ -20,7 +20,7 @@ track_anomalies <- function(segments, max_speed = 100, max_distance = 1000){
            label = "Segment anomaly (speed)",
            lng = (lng_start + lng_end)/2,
            lat = (lat_start + lat_end)/2) |>
-    mk_popup(info = c("title", "speed"))
+    popup_anomaly_speed()
            
   if(nrow(fu_speed) > 0)
     warning("Speed anomaly detected: ", paste(fu_speed$speed, collapse = " / "), call. = F)
@@ -32,7 +32,7 @@ track_anomalies <- function(segments, max_speed = 100, max_distance = 1000){
            label = "Segment anomaly (distance)",
            lng = (lng_start + lng_end)/2,
            lat = (lat_start + lat_end)/2) |>
-    mk_popup(info = c("title", "distance_m"))
+    popup_anomaly_distance()
            
   if(nrow(fu_distance) > 0)
     warning("Distance anomaly detected: ", paste(fu_distance$distance, collapse = " / "), call. = F)
@@ -44,7 +44,7 @@ track_anomalies <- function(segments, max_speed = 100, max_distance = 1000){
            label = "Segment anomaly (Speed from starting point)",
            lng = (lng_start + lng_end)/2,
            lat = (lat_start + lat_end)/2) |>
-    mk_popup(info = c("title", "speed"))
+    popup_anomaly_speed()
            
   if(nrow(fu_speed_start) > 0)
     warning("Speed / start anomaly detected: ", fu_speed_start$speed, call. = F)
