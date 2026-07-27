@@ -19,7 +19,7 @@ popup_finish <- function(markers, plan = FALSE){
   x <- popup_title(markers$type)
   if(!plan)
     x <- x |> popup_append(popup_datetime(markers$datetime))
-  x <- x |> popup_append(popup_distance(markers$distance))
+  x <- x |> popup_append(popup_distance(markers$cum_distance))
   markers |> popup(x)
   
 }

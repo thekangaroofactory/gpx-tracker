@@ -32,8 +32,7 @@ itinerary_Server <- function(id, segments, title) {
     
     # -- compute summaries
     elevation <- elevation_summary(segments)
-    breaks <- break_summary(segments)
-    milestones <- milestones_summary(segments, breaks)
+    milestones <- milestones_summary(segments)
     distances <- distance_summary(segments, dist = ifelse(distance >= 50, 10, 5), overnight = milestones |> filter(type == "overnight"))
     
     # -- compute anomalies
@@ -47,7 +46,6 @@ itinerary_Server <- function(id, segments, title) {
     # -- debug
     if(DEBUG){
       debug_milestones <<- milestones
-      debug_breaks <<- breaks
       debug_distances <<- distances
     }
     
@@ -97,16 +95,18 @@ itinerary_Server <- function(id, segments, title) {
     # --------------------------------------------------------------------------
 
     # -- milestones
-    output$timeline <- renderUI(timeline(milestones))
+    output$timeline <- renderUI(timeline(milestones |> filter(!type %in% c("short", "medium"))))
     
-    # -- map track & breaks
-    map_track <- segments |>
-      m_track() |>
-      m_break(breaks)
+    # -- map track
+    map_track <- segments |> m_track()
+    
+    # -- add breaks
+    breaks <- milestones |> filter(type %in% c("long", "overnight")) |> popup_break()
+    map_track <- map_track |> m_marker(breaks, group = "breaks")
     
     # -- add track bounds
-    start <- segments |> bound_start() |> popup_start(ns)
-    finish <- segments |> bound_finish() |> popup_finish()
+    start <- milestones |> filter(type == "start") |> popup_start(ns)
+    finish <- milestones |> filter(type == "finish") |> popup_finish()
     map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
     
     # -- add anomaly layer

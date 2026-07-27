@@ -21,9 +21,8 @@ bound_start <- function(segments){
 
   segments |> 
     head(n = 1L) |>
-    select(segment_id, datetime_start, lng_start, lat_start, elevation_start) |>
-    mutate(type = "start",
-           distance = 0) |>
+    select(segment_id, datetime_start, lng_start, lat_start, elevation_start, cum_distance) |>
+    mutate(type = "start") |>
     rename(datetime = datetime_start,
            lng = lng_start,
            lat = lat_start,
@@ -40,7 +39,6 @@ bound_finish <- function(segments){
     rename(datetime = datetime_end,
            lng = lng_end,
            lat = lat_end,
-           elevation = elevation_end,
-           distance = cum_distance)
+           elevation = elevation_end)
   
 }
