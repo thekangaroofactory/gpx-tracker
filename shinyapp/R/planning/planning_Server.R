@@ -48,7 +48,7 @@ planning_Server <- function(id, segments, title) {
       legs_init <- legs_init |> 
         mk_popup(info = c("title", "show_targets", "remove_leg", "cum_distance"), ns = ns) |>
         mutate(type = "leg",
-               label = paste(round(cum_distance, digits = 0), "km"))}
+               label = "Leg")}
     
     # -- persistence
     # popup & label are not saved
