@@ -47,8 +47,7 @@ planning_Server <- function(id, segments, title) {
     if(!is.null(legs_init)){
       legs_init <- legs_init |> 
         popup_leg(ns) |>
-        mutate(type = "leg",
-               label = "Leg")}
+        mutate(type = "leg")}
     
     # -- persistence
     # popup & label are not saved
@@ -114,8 +113,7 @@ planning_Server <- function(id, segments, title) {
         filter(segment_id == leg_id |
                lag(segment_id) == leg_id) |>
         popup_leg(ns) |>
-        mutate(type = "leg",
-               label = "Leg")
+        mutate(type = "leg")
       
       # -- update map
       leafletProxy("map", session) |>
