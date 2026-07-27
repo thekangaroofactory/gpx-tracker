@@ -39,16 +39,8 @@ planning_Server <- function(id, segments, title) {
     # --------------------------------------------------------------------------
     
     # -- read leg file
-    legs_init <- as.data.frame(readr::read_csv(file = file.path(Sys.getenv("DATA_HOME"), "legs.csv"),
-                                               col_types = readr::cols(segment_id = "i",
-                                                                       lng = "d",
-                                                                       lat = "d",
-                                                                       datetime = "T",
-                                                                       elevation = "d",
-                                                                       cum_distance = "d",
-                                                                       type = "c",
-                                                                       distance = "d")))
-    if(nrow(legs_init) == 0) legs_init <- NULL
+    legs_full <- read_track_data(type = "leg")
+    legs_init <- legs_full |> filter(track_id == id)
     legs <- reactiveVal(legs_init)
     
     # -- add popup & label
@@ -61,8 +53,8 @@ planning_Server <- function(id, segments, title) {
     # -- persistence
     # popup & label are not saved
     observeEvent(legs(),
-      readr::write_csv(legs(), file = file.path(Sys.getenv("DATA_HOME"), "legs.csv")),
-      ignoreInit = TRUE)
+                 iker::write_data(bind_rows(legs_full |> filter(track_id != id), legs()), file = "legs.csv"),
+                 ignoreInit = TRUE)
 
     # -- display leg targets
     observeEvent(input$leg_targets, {
@@ -99,7 +91,8 @@ planning_Server <- function(id, segments, title) {
       # -- extract leg
       leg <- segments |> 
         leg_targets(start = split_input(input$create_leg)['value'], min = 0, max = 0) |> 
-        mutate(type = "leg")
+        mutate(track_id = id,
+               type = "leg")
         
       # -- store new leg
       legs(bind_rows(legs(), leg))
