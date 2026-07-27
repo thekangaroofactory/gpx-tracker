@@ -136,13 +136,29 @@ planning_Server <- function(id, segments, title) {
       # -- extract input value (reference segment id)
       leg_id <- split_input(input$drop_leg)['value']
       
+      # -- get next leg (to retrieve later)
+      next_leg <- legs() |> filter(lag(segment_id) == leg_id)
+      
       # -- drop from leg table
-      legs(legs() |> filter(segment_id != leg_id))
+      # update distance
+      x <- legs() |> 
+        filter(segment_id != leg_id) |>
+        mutate(distance = cum_distance - lag(cum_distance)) |>
+        mutate(distance = replace_when(distance, is.na(distance) ~ cum_distance))
+      legs(x)
+      
+      # -- get updated next leg
+      next_leg <- x |> 
+        filter(segment_id == next_leg$segment_id) |>
+        popup_leg(ns) |>
+        mutate(type = "leg",
+               label = "Leg")
       
       # -- update map (cleanup leg marker)
       leafletProxy("map", session) |>
-        removeMarker(layerId = paste0("leg_", leg_id))
-      
+        removeMarker(layerId = paste0("leg_", c(leg_id, next_leg$segment_id))) |>
+        m_marker(next_leg, layerId = paste0("leg_", next_leg$segment_id), group = "legs")
+        
     }, ignoreInit = TRUE)
     
     
