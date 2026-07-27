@@ -21,8 +21,8 @@ m_break <- function(map, breaks = NULL){
   
   # -- short
   map <- map %>% addCircleMarkers(data = breaks |> filter(type == "short"),
-                                  lng = ~lng_end,
-                                  lat = ~lat_end,
+                                  lng = ~lng,
+                                  lat = ~lat,
                                   radius = ~time/1000,
                                   popup = ~paste(sep = "<br/>",
                                                  "<b>Break (short)</b>",
@@ -30,8 +30,8 @@ m_break <- function(map, breaks = NULL){
   
   # -- medium
   map <- map %>% addCircleMarkers(data = breaks |> filter(type == "medium"),
-                                  lng = ~lng_end,
-                                  lat = ~lat_end,
+                                  lng = ~lng,
+                                  lat = ~lat,
                                   color = "orange",
                                   radius = ~time/1000,
                                   popup = ~paste(sep = "<br/>",

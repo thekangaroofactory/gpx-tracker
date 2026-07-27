@@ -101,8 +101,9 @@ itinerary_Server <- function(id, segments, title) {
     map_track <- segments |> m_track()
     
     # -- add breaks
-    breaks <- milestones |> filter(type %in% c("long", "overnight")) |> popup_break()
-    map_track <- map_track |> m_marker(breaks, group = "breaks")
+    major_breaks <- milestones |> filter(type %in% c("long", "overnight")) |> popup_break()
+    minor_breaks <- milestones |> filter(type %in% c("short", "medium"))
+    map_track <- map_track |> m_marker(major_breaks, group = "breaks") |> m_break(minor_breaks)
     
     # -- add track bounds
     start <- milestones |> filter(type == "start") |> popup_start(ns)
