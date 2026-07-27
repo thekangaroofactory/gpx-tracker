@@ -23,8 +23,8 @@ p_distance_ruler <- function(data, overnight = NULL){
   
   # -- add overnight time
   if(is.data.frame(overnight) && nrow(overnight) > 0)
-    p <- p + geom_segment(x = overnight$datetime_start,
-                          xend = overnight$datetime_end,
+    p <- p + geom_segment(x = overnight$datetime,
+                          xend = overnight$datetime + overnight$time,
                           y = 0,
                           yend = 0,
                           lineend = "round",
