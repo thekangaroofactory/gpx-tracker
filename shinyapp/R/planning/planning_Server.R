@@ -236,16 +236,23 @@ planning_Server <- function(id, segments, title) {
           select(segment_id, lng, lat, elevation, cum_distance, type, label) |>
           popup_leg_click(ns = ns)
         
-        # -- update map
-        leafletProxy("map", session) |>
-          
-          # -- cleanup previous marker
-          removeMarker(layerId = "click") |>
-          
-          # -- add targets
-          m_marker(x, layerId = "click")
+      } else {
+        
+        x <- data.frame(lng = input$map_click$lng,
+                        lat = input$map_click$lat,
+                        type = "click") |>
+          popup_click()
         
       }
+      
+      # -- update map
+      leafletProxy("map", session) |>
+        
+        # -- cleanup previous marker
+        removeMarker(layerId = "click") |>
+        
+        # -- add targets
+        m_marker(x, layerId = "click")
       
     })
     

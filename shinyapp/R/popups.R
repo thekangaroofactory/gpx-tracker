@@ -32,6 +32,13 @@ popup_target <- function(markers, ns){
   
 }
 
+popup_click <- function(markers){
+  
+  x <- popup_title(markers$type)
+  markers |> popup(x)
+  
+}
+
 popup_leg_click <- function(markers, ns){
   
   x <- popup_title(markers$type) |>
