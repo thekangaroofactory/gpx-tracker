@@ -2,10 +2,6 @@
 
 p_distance_ruler <- function(data, overnight = NULL){
   
-  # -- outlier threshold
-  # x <- summary(data$time)[c('1st Qu.', '3rd Qu.')]
-  # time_ceiling <- x[2] + 1.5 * (x[2] - x[1])
-  
   # -- compute axis breaks
   axis_x_breaks <- c(min(data$datetime_start), data$datetime_end)
   
@@ -20,16 +16,6 @@ p_distance_ruler <- function(data, overnight = NULL){
                  lineend = "round",
                  linewidth = 4,
                  colour = "#b5c098")
-  
-  # -- add overnight time
-  if(is.data.frame(overnight) && nrow(overnight) > 0)
-    p <- p + geom_segment(x = overnight$datetime,
-                          xend = overnight$datetime + overnight$time,
-                          y = 0,
-                          yend = 0,
-                          lineend = "round",
-                          linewidth = 3,
-                          colour = "#d8dec9")
   
   # -- add slowest / fastest sections
   p <- p + geom_segment(data = data |>
@@ -46,13 +32,24 @@ p_distance_ruler <- function(data, overnight = NULL){
     geom_segment(data = data |>
                    filter(time == min(time)),
                  aes(
-                   x = datetime_start, 
-                   xend = datetime_end), 
-                 y = 0, 
+                   x = datetime_start,
+                   xend = datetime_end),
+                 y = 0,
                  yend = 0,
                  lineend = "round",
                  linewidth = 3,
                  colour = "green")
+  
+  # -- add overnight time
+  # after sections in case one overlaps with overnight
+  if(is.data.frame(overnight) && nrow(overnight) > 0)
+    p <- p + geom_segment(x = overnight$datetime,
+                          xend = overnight$datetime + overnight$time,
+                          y = 0,
+                          yend = 0,
+                          lineend = "round",
+                          linewidth = 3,
+                          colour = "#d8dec9")
   
   # -- add section markers
   p <- p + geom_point(aes(y = 0.1), shape = 25) +
