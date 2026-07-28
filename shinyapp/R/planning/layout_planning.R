@@ -29,7 +29,10 @@ layout_planning <- function(id, title = "Planning"){
       actionLink(inputId = ns("map_fit"), label = "", icon = icon("down-left-and-up-right-to-center"), onclick = paste0('Shiny.setInputValue(\"', ns("map_fit"), '\", this.id, {priority: \"event\"})'))),
     
     # -- main content
-    leafletOutput(ns("map"))
+    card(
+      card_body(
+      padding = 0,
+      leafletOutput(ns("map"))))
     
   ) # nav_panel
   
