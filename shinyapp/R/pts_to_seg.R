@@ -17,14 +17,16 @@ pts_to_seg <- function(track){
   track |>
     mutate(segment_id = 1:length(point_id),
            datetime_end = lead(datetime),
-           geometry_end = lead(geometry),
+           lng_end = lead(lng),
+           lat_end = lead(lat),
            elevation_end = lead(elevation)) |>
     rename(datetime_start = datetime,
-           geometry_start = geometry,
+           lng_start = lng,
+           lat_start = lat,
            elevation_start = elevation) |>
     select(-(point_id)) |>
     relocate(segment_id) |>
-    relocate(elevation_start, .after = geometry_start) |>
+    relocate(elevation_start, .after = lat_start) |>
     filter(row_number() <= n() - 1)
 
 }

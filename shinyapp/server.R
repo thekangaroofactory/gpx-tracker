@@ -4,13 +4,14 @@ function(input, output, session) {
   
   # -- declare objects
   cache_ids <- reactiveVal()
-  cache_obs <- reactiveVal()
+  cache_obs <- reactiveValues()
   
   # -- list available files
-  gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx")
+  gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx", recursive = TRUE)
   
   # -- file selector layout
-  output$file_selector <- renderUI(layout_file_selector(files = basename(gpx_files)))
+  output$file_selector_done <- renderUI(layout_file_selector(files = gpx_files[!grepl("planned", gpx_files)]))
+  output$file_selector_planned <- renderUI(layout_file_selector(files = gpx_files[grepl("planned", gpx_files)]))
   
   # -- file selector listener
   observeEvent(input$open_track, {
@@ -44,9 +45,20 @@ function(input, output, session) {
             value = 5,
             message = "Load GPX data")
           
+          # -- is planned or done?
+          planned_track <- grepl("planned", input$open_track)
+          
+          # -- read file & add common stats
           track_segments <- read_gpx(file.path(Sys.getenv("DATA_HOME"), input$open_track)) |>
             pts_to_seg() |>
             seg_stats()
+          
+          if(DEBUG)
+            debug_segments <<- track_segments
+          
+          # -- add speed (only for finish ones)
+          if(!planned_track)
+            track_segments <- speed_stats(track_segments)
           
           # -- start module server
           # return value is stored to destroy observer later
@@ -54,15 +66,24 @@ function(input, output, session) {
             value = 10,
             message = "Launch track module")
           
-          obs <- itinerary_Server(id = uuid, segments = track_segments, filename = input$open_track)
-          cache_obs(obs)
+          # -- get track title
+          title <- track_title(file.path(Sys.getenv("DATA_HOME"), input$open_track))
+          
+          obs <- if(planned_track)
+            planning_Server(id = uuid, segments = track_segments, title = title)
+          else
+            itinerary_Server(id = uuid, segments = track_segments, title = title)
+          cache_obs$uuid <- obs
           
           # -- build ui
           setProgress(
             value = 80,
             message = "Build UI")
           
-          content <- layout_itinerary(id = uuid, title = gsub("[0-9]|-|_|.gpx", "", input$open_track))
+          content <- if(planned_track)
+            layout_planning(id = uuid, title = title)
+          else
+            layout_itinerary(id = uuid, title = title)
           
           # -- insert tab
           setProgress(
@@ -84,19 +105,22 @@ function(input, output, session) {
     cat("Close itinerary", input$close_track, "\n")
     
     # -- extract id
-    track_id <- gsub("close_", "", input$close_track)
-    
-    # -- drop from cache
-    cache_ids(cache_ids()[!cache_ids() %in% track_id])
-    
+    uuid <- gsub("close_", "", input$close_track)
+
     # -- close nav
     nav_select(id = "nav", selected = "home")
-    nav_remove(id = "nav", target = track_id)
+    nav_remove(id = "nav", target = uuid)
     
-    # -- destroy module listener & inputs
-    cache_obs()$destroy()
-    cleanup_inputs(id = track_id, input)
-    session$userData[[NS(track_id, "slider_active")]] <- NULL
+    # -- destroy module listener
+    if(!is.null(cache_obs[[uuid]])){
+      cache_obs[[uuid]]$destroy()
+      cache_obs[[uuid]] <- NULL}
+    # -- clear inputs
+    cleanup_inputs(id = uuid, input)
+    # -- clear session data
+    session$userData[[NS(uuid, "slider_active")]] <- NULL
+    # -- drop from cache
+    cache_ids(cache_ids()[!cache_ids() %in% uuid])
     
   })
   

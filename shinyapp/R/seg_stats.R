@@ -3,7 +3,7 @@
 #' Compute Segment Stats
 #' 
 #' @description
-#' Add basic time, distance, speed, elevation gain stats to each segment.
+#' Add basic time, distance, elevation gain stats to each segment.
 #'
 #' @param track the track table
 #'
@@ -22,14 +22,14 @@ seg_stats <- function(track){
     mutate(time = as.numeric(difftime(datetime_end, datetime_start, units = "secs")))
   
   # -- compute distance (m)
+  # convert lng/lat back to sf object
+  df_start <- st_as_sf(track[c("lng_start", "lat_start")], coords = c("lng_start", "lat_start"), crs = 4326)
+  df_end <- st_as_sf(track[c("lng_end", "lat_end")], coords = c("lng_end", "lat_end"), crs = 4326)
+  distances <- st_distance(df_start, df_end, by_element = TRUE)
+  units(distances) <- NULL
   track <- track |>
-    mutate(distance = as.numeric(st_distance(geometry_start, geometry_end, by_element = T)),
+    mutate(distance = distances,
            cum_distance = cumsum(distance) / 1000)
-  
-  # -- compute speed (km/h)
-  track <- track |>
-    mutate(speed = distance / time * 3.6,
-           cummean_speed = cummean(speed))
   
   # -- add elevation gain (m)
   track <- track |>

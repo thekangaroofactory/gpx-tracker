@@ -39,10 +39,11 @@ distance_summary <- function(data, n = 4, dist = NULL, overnight = NULL){
     mutate(section_id = row_number(), .before = 1)
   
   # -- remove overnight break
+  # convert time to minutes
   if(is.data.frame(overnight) && nrow(overnight) > 0){
     df <- df |> 
-      mutate(time = if_else(datetime_start <= overnight$datetime_start & datetime_end >= overnight$datetime_end, 
-                            time - (overnight$datetime_end - overnight$datetime_start),
+      mutate(time = if_else(datetime_start <= overnight$datetime & datetime_end >= overnight$datetime + overnight$time, 
+                            time - overnight$time / 60,
                             time))}
   
   # -- return

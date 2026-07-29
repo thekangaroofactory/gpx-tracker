@@ -48,7 +48,9 @@ layout_itinerary <- function(id, title = "itinerary"){
           tagList(
             h4("Track"),
             card(
-              leafletOutput(ns("map")))),
+              card_body(
+                padding = 0,
+                leafletOutput(ns("map"))))),
           
           # -- the plots
           tagList(

@@ -34,7 +34,8 @@ tagList(
       icon = icon("home"),
       
       h1("Tracks"),
-      p("Available GPX files:"),
-      uiOutput("file_selector"))
+      navset_underline(
+        nav_panel(title = "Done", uiOutput("file_selector_done")),
+        nav_panel(title = "Planned", uiOutput("file_selector_planned"))))
     
   ))

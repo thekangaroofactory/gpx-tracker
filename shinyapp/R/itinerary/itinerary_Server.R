@@ -4,7 +4,7 @@
 # Server logic
 # ------------------------------------------------------------------------------
 
-itinerary_Server <- function(id, segments, filename) {
+itinerary_Server <- function(id, segments, title) {
   moduleServer(id, function(input, output, session) {
     
     # --------------------------------------------------------------------------
@@ -32,22 +32,11 @@ itinerary_Server <- function(id, segments, filename) {
     
     # -- compute summaries
     elevation <- elevation_summary(segments)
-    breaks <- break_summary(segments)
-    milestones <- milestones_summary(segments, breaks)
+    milestones <- milestones_summary(segments)
     distances <- distance_summary(segments, dist = ifelse(distance >= 50, 10, 5), overnight = milestones |> filter(type == "overnight"))
     
     # -- compute anomalies
-    fu_speed <- segments |> filter(speed > SPEED_ANOMALY)
-    if(nrow(fu_speed) > 0)
-      warning("Speed anomaly detected: ", paste(fu_speed$speed, collapse = " / "), call. = F)
-    
-    fu_distance <- segments |> filter(distance > DISTANCE_ANOMALY)
-    if(nrow(fu_distance) > 0)
-      warning("Distance anomaly detected: ", paste(fu_distance$distance, collapse = " / "), call. = F)
-    
-    fu_speed_start <- segments |> filter(segment_id == 1 & speed > 20)
-    if(nrow(fu_speed_start) > 0)
-      warning("Speed / start anomaly detected: ", fu_speed_start$speed, call. = F)
+    anomalies <- track_anomalies(segments, max_speed = SPEED_ANOMALY, max_distance = DISTANCE_ANOMALY)
     
     
     # --------------------------------------------------------------------------
@@ -56,9 +45,7 @@ itinerary_Server <- function(id, segments, filename) {
 
     # -- debug
     if(DEBUG){
-      debug_segments <<- segments
       debug_milestones <<- milestones
-      debug_breaks <<- breaks
       debug_distances <<- distances
     }
     
@@ -89,7 +76,7 @@ itinerary_Server <- function(id, segments, filename) {
       message = "Build map & plots")
     
     # -- title
-    output$title <- renderText(tail(unlist(strsplit(unlist(strsplit(filename, split = ".", fixed = T))[1], "_")), 1))
+    output$title <- renderText(title)
     
     # -- GPS points
     output$nb_points <- renderText(nrow(segments) + 1)
@@ -108,14 +95,23 @@ itinerary_Server <- function(id, segments, filename) {
     # --------------------------------------------------------------------------
 
     # -- milestones
-    output$timeline <- renderUI(timeline(milestones))
+    output$timeline <- renderUI(timeline(milestones |> filter(!type %in% c("short", "medium"))))
     
-    # -- track map
-    # saved as an object for reuse purpose
-    map_track <- m_track(segments, breaks)
+    # -- map track
+    map_track <- segments |> m_track()
+    
+    # -- add breaks
+    major_breaks <- milestones |> filter(type %in% c("long", "overnight")) |> popup_break()
+    minor_breaks <- milestones |> filter(type %in% c("short", "medium"))
+    map_track <- map_track |> m_marker(major_breaks, group = "breaks") |> m_break(minor_breaks)
+    
+    # -- add track bounds
+    start <- milestones |> filter(type == "start") |> popup_start(ns)
+    finish <- milestones |> filter(type == "finish") |> popup_finish()
+    map_track <- map_track |> m_marker(markers = bind_rows(start, finish))
     
     # -- add anomaly layer
-    map_track <- m_anomalies(map = map_track, speed = fu_speed, distance = fu_distance, start = fu_speed_start)
+    map_track <- map_track |> m_marker(anomalies, group = "anomalies")
     
     # -- the main map
     output$map <- renderLeaflet(map_track)
@@ -140,8 +136,8 @@ itinerary_Server <- function(id, segments, filename) {
     # --------------------------------------------------------------------------
     
     # -- cleanup
-    c_segments <- segments |> filter(!segment_id %in% fu_speed$segment_id,
-                                     !segment_id %in% fu_speed_start$segment_id)
+    c_segments <- segments |> filter(!segment_id %in% anomalies$segment_id,
+                                     !segment_id %in% anomalies$segment_id)
     
     # -- speed stats
     output$speed_max <- renderText(paste0(round(max(c_segments$speed, na.rm = T), digits = 1), "km/h"))
