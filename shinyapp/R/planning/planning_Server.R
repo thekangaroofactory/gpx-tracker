@@ -146,12 +146,13 @@ planning_Server <- function(id, segments, title) {
       legs(x)
       
       # -- get updated next leg
-      next_leg <- x |> 
-        filter(segment_id == next_leg$segment_id) |>
-        popup_leg(ns) |>
-        mutate(type = "leg",
-               label = "Leg")
-      
+      if(nrow(next_leg) > 0){
+        next_leg <- x |> 
+          filter(segment_id == next_leg$segment_id) |>
+          popup_leg(ns) |>
+          mutate(type = "leg",
+                 label = "Leg")}
+     
       # -- update map (cleanup leg marker)
       leafletProxy("map", session) |>
         removeMarker(layerId = paste0("leg_", c(leg_id, next_leg$segment_id))) |>
