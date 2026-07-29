@@ -4,7 +4,7 @@ function(input, output, session) {
   
   # -- declare objects
   cache_ids <- reactiveVal()
-  cache_obs <- reactiveVal()
+  cache_obs <- reactiveValues()
   
   # -- list available files
   gpx_files <- list.files(path = Sys.getenv("DATA_HOME"), pattern = ".gpx", recursive = TRUE)
@@ -73,7 +73,7 @@ function(input, output, session) {
             planning_Server(id = uuid, segments = track_segments, title = title)
           else
             itinerary_Server(id = uuid, segments = track_segments, title = title)
-          cache_obs(obs)
+          cache_obs$uuid <- obs
           
           # -- build ui
           setProgress(
@@ -105,20 +105,22 @@ function(input, output, session) {
     cat("Close itinerary", input$close_track, "\n")
     
     # -- extract id
-    track_id <- gsub("close_", "", input$close_track)
-    
-    # -- drop from cache
-    cache_ids(cache_ids()[!cache_ids() %in% track_id])
-    
+    uuid <- gsub("close_", "", input$close_track)
+
     # -- close nav
     nav_select(id = "nav", selected = "home")
-    nav_remove(id = "nav", target = track_id)
+    nav_remove(id = "nav", target = uuid)
     
-    # -- destroy module listener & inputs
-    if(!is.null(cache_obs()))
-      cache_obs()$destroy()
-    cleanup_inputs(id = track_id, input)
-    session$userData[[NS(track_id, "slider_active")]] <- NULL
+    # -- destroy module listener
+    if(!is.null(cache_obs[[uuid]])){
+      cache_obs[[uuid]]$destroy()
+      cache_obs[[uuid]] <- NULL}
+    # -- clear inputs
+    cleanup_inputs(id = uuid, input)
+    # -- clear session data
+    session$userData[[NS(uuid, "slider_active")]] <- NULL
+    # -- drop from cache
+    cache_ids(cache_ids()[!cache_ids() %in% uuid])
     
   })
   
