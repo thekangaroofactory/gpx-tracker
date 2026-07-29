@@ -256,6 +256,24 @@ planning_Server <- function(id, segments, title) {
       
     })
     
+    
+    observeEvent(input$map_marker_click, {
+
+      cat("Marker click: id =", input$map_marker_click$id, "\n")
+      
+            
+      # leafletProxy("map", session) |>
+      #   removePopup(layerId = "click") |>
+      #   addPopups(
+      #     lng = input$map_marker_click$lng,
+      #     lat = input$map_marker_click$lat,
+      #     popup = "Updated value",
+      #     layerId = "click",
+      #     group = NULL)
+      
+    })
+    
+    
     # -- zoom (fit track)
     observeEvent(input$map_fit, {
       
