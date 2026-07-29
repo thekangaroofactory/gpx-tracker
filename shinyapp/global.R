@@ -13,7 +13,7 @@ library(ggplot2)
 ktools::source_code("./R")
 
 # -- params
-app_version <- "v1.2"
+app_version <- "v1.3"
 DEBUG <- TRUE
 
 # -- settings
